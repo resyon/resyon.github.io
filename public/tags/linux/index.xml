@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linux on Resyon&#39;s World</title>
+    <link>https://resyon.github.io/tags/linux/</link>
+    <description>Recent content in linux on Resyon&#39;s World</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Resyon 2022</copyright>
+    <lastBuildDate>Sat, 11 Sep 2021 10:49:41 +0800</lastBuildDate><atom:link href="https://resyon.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>UNIX pipeline &amp; file descriptor</title>
+      <link>https://resyon.github.io/posts/unix-pipeline-file-descriptor/</link>
+      <pubDate>Sat, 11 Sep 2021 10:49:41 +0800</pubDate>
+      
+      <guid>https://resyon.github.io/posts/unix-pipeline-file-descriptor/</guid>
+      <description>完成6.s081 lab1 后对pipeline, file descriptor 有了一定了解，做个笔记
+ pipeline (pipe)  A pipe is a small kernel buffer exposed to processes as a pair of file descriptors, one for reading and one for writing. Writing data to one end of the pipe makes that data available for reading from the other end of the pipe. Pipes provide a way for processes to communicate.
+ 使用 int pd[2]; // make pipeline, return pd[0] for read, pd[1] for write if(pipe(pd) &amp;lt; 0){ // handle fail 	fprintf(stderr, &amp;#34;fail to make pipeline\n&amp;#34;); exit(1); } int pid = fork(); if(pid &amp;lt; 0){ // handle fail }else if(pid == 0){ // child 	char cnt = &amp;#34;this is test content from child process&amp;#34;; write(pd[1], cnt, strlen(cnt)); exit(0); }else{ // parent 	char buf[128]; // assume that size of content to read would not exceed buf 	read(pd[0], buf, sizeof(buf)); printf(&amp;#34;get buf from child, buf=&amp;lt;%s&amp;gt;\n&amp;#34;, buf); } file descriptor (fd) fd是对广义上的UNIX file进行引用的一层抽象，这层抽象使得在操作regular file, device, pipeline 等文件时，表面上一致，操作起来简单，(都可使用read(int fd,.</description>
+      <content>&lt;blockquote&gt;
+&lt;p&gt;完成&lt;code&gt;6.s081&lt;/code&gt; lab1 后对&lt;code&gt;pipeline&lt;/code&gt;, &lt;code&gt;file descriptor&lt;/code&gt; 有了一定了解，做个笔记&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;pipeline-pipe&#34;&gt;&lt;code&gt;pipeline&lt;/code&gt; (&lt;code&gt;pipe&lt;/code&gt;)&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A &lt;code&gt;pipe&lt;/code&gt; is a small kernel buffer exposed to processes as a pair of file descriptors, one for reading and one for writing. Writing data to one end of the pipe makes that data available for reading from the other end of the pipe. Pipes provide a way for processes to communicate.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;使用&#34;&gt;使用&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; pd[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;];
+&lt;span style=&#34;color:#75715e&#34;&gt;// make pipeline, return pd[0] for read, pd[1] for write
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(pipe(pd) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;){
+	&lt;span style=&#34;color:#75715e&#34;&gt;// handle fail
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	fprintf(stderr, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fail to make pipeline&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+	exit(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;);
+}
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; pid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fork();
+&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(pid &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;){
+	&lt;span style=&#34;color:#75715e&#34;&gt;// handle fail
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(pid &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;){
+	&lt;span style=&#34;color:#75715e&#34;&gt;// child
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; cnt &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;this is test content from child process&amp;#34;&lt;/span&gt;;
+	write(pd[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;], cnt, strlen(cnt));
+	exit(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+}&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;{
+	&lt;span style=&#34;color:#75715e&#34;&gt;// parent
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; buf[&lt;span style=&#34;color:#ae81ff&#34;&gt;128&lt;/span&gt;];
+	&lt;span style=&#34;color:#75715e&#34;&gt;// assume that size of content to read would not exceed buf
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	read(pd[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;], buf, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(buf));
+	printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;get buf from child, buf=&amp;lt;%s&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, buf);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;file-descriptor-fd&#34;&gt;&lt;code&gt;file descriptor&lt;/code&gt; (&lt;code&gt;fd&lt;/code&gt;)&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;fd&lt;/code&gt;是对广义上的&lt;code&gt;UNIX file&lt;/code&gt;进行引用的一层抽象，这层抽象使得在操作&lt;code&gt;regular file&lt;/code&gt;, &lt;code&gt;device&lt;/code&gt;, &lt;code&gt;pipeline&lt;/code&gt; 等文件时，表面上一致，操作起来简单，(都可使用&lt;code&gt;read(int fd,..)&lt;/code&gt;; &lt;code&gt;write(int fd,...)&lt;/code&gt;等透过&lt;code&gt;fd&lt;/code&gt;的&lt;code&gt;API&lt;/code&gt;), 但实现上，不同类型的文件大不相同.&lt;/p&gt;
+&lt;h3 id=&#34;几个重要的fd特性&#34;&gt;几个重要的&lt;code&gt;fd&lt;/code&gt;特性&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;总是自动打开3个&lt;code&gt;fd&lt;/code&gt;, 0=&lt;code&gt;stdin&lt;/code&gt; , 1=&lt;code&gt;stdout&lt;/code&gt;, 2=&lt;code&gt;stderr&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;总是选取最小的&lt;code&gt;fd&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;close(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;);
+&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; fd &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/tmp/test.c&amp;#34;&lt;/span&gt;, O_RDONLY);
+fprintf(stderr, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fd=%d&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, fd); &lt;span style=&#34;color:#75715e&#34;&gt;// fd=1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;file descriptor table&lt;/code&gt;由进程维护，即进程间&lt;code&gt;fd&lt;/code&gt;互不影响&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;以下代码来自&lt;code&gt;lab 1&lt;/code&gt;实验&lt;code&gt;primes&lt;/code&gt;, 实现了下图所示的&lt;code&gt;埃氏筛法&lt;/code&gt;
+&lt;img src=&#34;https://resyon.github.io/upload/2021/09/image-a50ab1eafdde4f5d8e9516ed77376b38.png&#34; alt=&#34;image.png&#34;&gt;
+为摆脱&lt;code&gt;xv6&lt;/code&gt;对&lt;code&gt;fd&lt;/code&gt;数目的限制，每个子进程都对管道传入的&lt;code&gt;fd&lt;/code&gt;进行了多次重定向, 但在子进程改变&lt;code&gt;fd&lt;/code&gt;并不影响父进程，程序能正常执行&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// redirect pd[k] to k, both pd[k] and k are fd
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;redirect&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; k, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; pd[]){
+    close(k);
+    dup(pd[k]);
+    close(pd[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]);
+    close(pd[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;]);
+}
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;loop&lt;/span&gt;(){
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; p, v, pid;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; pd[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;];
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(read(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;p, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;))){
+        printf(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;prime %d&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, p);
+        pipe(pd);
+	pid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fork();
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(pid &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;){
+	    fprintf(stderr, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fail to fork, current pid=%d&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, getpid());
+	    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
+	}&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(pid &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;){
+            redirect(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, pd);
+            loop();
+        }&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;{
+            redirect(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, pd);
+            &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt;(read(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;v, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;))){
+                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(v &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;){
+                    write(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;v, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;));
+                }
+            }
+        }
+    }
+}
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(){
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; p[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;];
+    pipe(p);
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(fork()&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;){
+        redirect(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, p);
+        loop();
+    }&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;{
+        redirect(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, p);
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;; i&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;35&lt;/span&gt;;&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;i){
+            write(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;i, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;));
+        }
+    }
+    exit(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;经由&lt;code&gt;fork&lt;/code&gt;和&lt;code&gt;dup&lt;/code&gt;得到，的对同一文件的&lt;code&gt;fd&lt;/code&gt;, 它们共享偏移&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;fork&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(fork() &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;){
+	fprintf(stdout, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;hello &amp;#34;&lt;/span&gt;);
+	exit(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+}&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;{
+	wait((&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;)&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// wait child exit
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	fprintf(stdout, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;world&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;);
+	exit(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+}
+
+&lt;span style=&#34;color:#75715e&#34;&gt;// always get
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// &amp;#34;hello world\n&amp;#34;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
+    </item>
+    
+    <item>
+      <title>Editor for /etc/sudoer</title>
+      <link>https://resyon.github.io/posts/sudoer-visudo/</link>
+      <pubDate>Sat, 14 Aug 2021 14:26:34 +0800</pubDate>
+      
+      <guid>https://resyon.github.io/posts/sudoer-visudo/</guid>
+      <description>新建用户，添加至sudo的若干步骤
+usermod -aG root username 这时候，我在debian上依旧不行 (这是因为/etc/sudoer的配置中，并没有指定root用户组中的成员都可以使用sudo)
+adduser useradd root 还是没用，选择直接编辑/etc/sudoer, 注意到这个文件的权限 通常使用sudoedit进行编辑， 这个时候如果出现语法错误，会非常蛋疼，查了资料后发现， visudo是个更好的选择，visudo不会在/etc/sudoer语法错误时拒绝编辑该文件，还会在保存后语法错误时提示重新编辑 </description>
+      <content>&lt;p&gt;新建用户，添加至sudo的若干步骤&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;usermod -aG root username
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这时候，我在debian上依旧不行
+(这是因为&lt;code&gt;/etc/sudoer&lt;/code&gt;的配置中，并没有指定&lt;code&gt;root&lt;/code&gt;用户组中的成员都可以使用&lt;code&gt;sudo&lt;/code&gt;)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;adduser useradd root
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;还是没用，选择直接编辑&lt;code&gt;/etc/sudoer&lt;/code&gt;,
+注意到这个文件的权限
+&lt;img src=&#34;https://resyon.github.io/upload/2021/08/image-45acfb1b60e347239b1a19eaf23609bf.png&#34; alt=&#34;image.png&#34;&gt;
+通常使用&lt;code&gt;sudoedit&lt;/code&gt;进行编辑， 这个时候如果出现语法错误，会非常蛋疼，查了&lt;a href=&#34;https://askubuntu.com/questions/73864/how-to-modify-an-invalid-etc-sudoers-file&#34;&gt;资料&lt;/a&gt;后发现，
+&lt;code&gt;visudo&lt;/code&gt;是个更好的选择，&lt;code&gt;visudo&lt;/code&gt;不会在&lt;code&gt;/etc/sudoer&lt;/code&gt;语法错误时拒绝编辑该文件，还会在保存后语法错误时提示重新编辑
+&lt;img src=&#34;2&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>

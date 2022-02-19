@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>algorithm on Resyon&#39;s World</title>
+    <link>https://resyon.github.io/tags/algorithm/</link>
+    <description>Recent content in algorithm on Resyon&#39;s World</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Resyon 2022</copyright>
+    <lastBuildDate>Fri, 21 May 2021 07:56:13 +0800</lastBuildDate><atom:link href="https://resyon.github.io/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>数组</title>
+      <link>https://resyon.github.io/posts/array/</link>
+      <pubDate>Fri, 21 May 2021 07:56:13 +0800</pubDate>
+      
+      <guid>https://resyon.github.io/posts/array/</guid>
+      <description>binary-search #include&amp;lt;vector&amp;gt;using namespace std; int search(vector&amp;lt;int&amp;gt;&amp;amp; nums, int target) { int i = 0, j = nums.size()-1; //这里的类型别用auto, 否则后续  //mid - 1 可能溢出  int mid; while (i &amp;lt;= j) { mid = (i + j ) / 2; if (nums[mid] == target) { return mid; }else if (nums[mid] &amp;gt; target)	j = mid-1; //注意此处 -1 	else i = mid+1; //以及此处 + 1  //否则容易陷入死循环 	} return -1; } </description>
+      <content>&lt;h2 id=&#34;binary-searchhttpsleetcode-cncomproblemsbinary-search&#34;&gt;&lt;a href=&#34;https://leetcode-cn.com/problems/binary-search/&#34;&gt;binary-search&lt;/a&gt;&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;vector&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;namespace&lt;/span&gt; std;
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;search&lt;/span&gt;(vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;amp;&lt;/span&gt; nums, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; target) {
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, j &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; nums.size()&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;//这里的类型别用auto, 否则后续
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                                &lt;span style=&#34;color:#75715e&#34;&gt;//mid - 1 可能溢出
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; mid;
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; j) {
+		mid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (i &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; j ) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (nums[mid] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; target) {
+			&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; mid;
+		}&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (nums[mid] &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; target)	j &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; mid&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;//注意此处 -1
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; mid&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;//以及此处 + 1
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;//否则容易陷入死循环
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	}
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
+    </item>
+    
+  </channel>
+</rss>

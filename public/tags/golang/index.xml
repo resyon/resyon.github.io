@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>golang on Resyon&#39;s World</title>
+    <link>https://resyon.github.io/tags/golang/</link>
+    <description>Recent content in golang on Resyon&#39;s World</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Resyon 2022</copyright>
+    <lastBuildDate>Wed, 08 Dec 2021 20:45:20 +0800</lastBuildDate><atom:link href="https://resyon.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>awesome way to make use of nil channel</title>
+      <link>https://resyon.github.io/posts/awesome-nil-channel/</link>
+      <pubDate>Wed, 08 Dec 2021 20:45:20 +0800</pubDate>
+      
+      <guid>https://resyon.github.io/posts/awesome-nil-channel/</guid>
+      <description>Awesome way to make use of nil channel common Send and receive operations on a nil channel block forver. It&amp;rsquo;s a well documented behavior
+package main import ( &amp;#34;fmt&amp;#34; ) func main() { var ch chan int go func() { fmt.Println(&amp;#34;ready to read from ch&amp;#34;) fmt.Printf(&amp;#34;get val: %v\n&amp;#34;, &amp;lt;-ch) }() fmt.Println(&amp;#34;ready to write val to ch&amp;#34;) ch &amp;lt;- 17 } got output awesome usage This behavior can be used as a way to dynamically enable and disable case blocks in a select statement.</description>
+      <content>&lt;h1 id=&#34;awesome-way-to-make-use-of-nil-channel&#34;&gt;Awesome way to make use of &lt;code&gt;nil&lt;/code&gt; channel&lt;/h1&gt;
+&lt;h2 id=&#34;common&#34;&gt;common&lt;/h2&gt;
+&lt;p&gt;Send and receive operations on a nil channel block forver. It&amp;rsquo;s a well documented behavior&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;package&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; (
+	&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
+)
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;() {
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ch&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;chan&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;
+
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;go&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt;() {
+		&lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ready to read from ch&amp;#34;&lt;/span&gt;)
+		&lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;get val: %v\n&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;ch&lt;/span&gt;)
+	}()
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ready to write val to ch&amp;#34;&lt;/span&gt;)
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;ch&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;17&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;got output
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-91291c0c90e24bb4b012c102129be6cd.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;awesome-usage&#34;&gt;awesome usage&lt;/h2&gt;
+&lt;p&gt;This behavior can be used as a way to dynamically enable and disable case blocks in a select statement.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;package&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt;(
+	&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
+	&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;time&amp;#34;&lt;/span&gt;
+)
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;() {  
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;inch&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;:=&lt;/span&gt; make(&lt;span style=&#34;color:#66d9ef&#34;&gt;chan&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;outch&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;:=&lt;/span&gt; make(&lt;span style=&#34;color:#66d9ef&#34;&gt;chan&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)
+
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;go&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt;() {
+	&lt;span style=&#34;color:#75715e&#34;&gt;// (0) `in != nil`
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;chan&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; = &lt;span style=&#34;color:#a6e22e&#34;&gt;inch&lt;/span&gt;
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;chan&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; {
+	    &lt;span style=&#34;color:#75715e&#34;&gt;// enable and disable `out`, `in`
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;select&lt;/span&gt; {
+	    &lt;span style=&#34;color:#75715e&#34;&gt;// (1)(3) out == nil =&amp;gt; { blocking }
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	    &lt;span style=&#34;color:#75715e&#34;&gt;// (2)(4) out != nil =&amp;gt; { out &amp;lt;- val; in != nil } 
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;:
+                &lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt; = &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;
+                &lt;span style=&#34;color:#a6e22e&#34;&gt;in&lt;/span&gt; = &lt;span style=&#34;color:#a6e22e&#34;&gt;inch&lt;/span&gt;
+
+	    &lt;span style=&#34;color:#75715e&#34;&gt;// (1)(3) in != nil =&amp;gt; { out != nil; val &amp;lt;- in; in == nil }
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	    &lt;span style=&#34;color:#75715e&#34;&gt;// (2)(4) in == nil =&amp;gt; { blocking }
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; = &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;in&lt;/span&gt;:
+                &lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt; = &lt;span style=&#34;color:#a6e22e&#34;&gt;outch&lt;/span&gt;
+                &lt;span style=&#34;color:#a6e22e&#34;&gt;in&lt;/span&gt; = &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;
+            }
+        }
+    }()
+
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;go&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt;() {
+	&lt;span style=&#34;color:#75715e&#34;&gt;// (1) blocking
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;// (2) result: 1
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;// (3) blocking
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;// (4) result: 2
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;r&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;range&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;outch&lt;/span&gt; {
+            &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;result:&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#a6e22e&#34;&gt;r&lt;/span&gt;)
+        }
+    }()
+
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;time&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Sleep&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;inch&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;inch&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;time&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Sleep&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;time&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Second&lt;/span&gt;)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;ref&#34;&gt;ref&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html&#34;&gt;http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html&lt;/a&gt;&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
+      <title>How does go calculate a hash value for keys in a map?</title>
+      <link>https://resyon.github.io/posts/go-map-calculate-hash-value/</link>
+      <pubDate>Sun, 10 Oct 2021 15:27:19 +0800</pubDate>
+      
+      <guid>https://resyon.github.io/posts/go-map-calculate-hash-value/</guid>
+      <description>How does go calculate a hash value for keys in a map?  ref
+ original   The language spec doesn&amp;rsquo;t say, which means that it&amp;rsquo;s free to change at any time, or differ between implementations.
+  The hash algorithm varies somewhat between types and platforms. As of now: On x86 (32 or 64 bit) if the CPU supports AES instructions, the runtime uses aeshash, a hash built on AES primitives, otherwise it uses a function &amp;ldquo;inspired by&amp;rdquo; xxHash and cityhash, but different from either.</description>
+      <content>&lt;h1 id=&#34;how-does-go-calculate-a-hash-value-for-keys-in-a-map&#34;&gt;How does go calculate a hash value for keys in a map?&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/questions/37625480/how-does-go-calculate-a-hash-value-for-keys-in-a-map&#34;&gt;ref&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;original&#34;&gt;original&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;The language spec doesn&amp;rsquo;t say, which means that it&amp;rsquo;s free to change at any time, or differ between implementations.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The hash algorithm varies somewhat between types and platforms. As of now: On x86 (32 or 64 bit) if the CPU supports AES instructions, the runtime uses aeshash, a hash built on AES primitives, otherwise it uses a function &amp;ldquo;inspired by&amp;rdquo; xxHash and cityhash, but different from either. There are different variants for 32-bit and 64-bit systems. Most types use a simple hash of their memory contents, but floating-point types have code to ensure that 0 and -0 hash equally (since they compare equally) and NaNs hash randomly (since two NaNs are never equal). Since complex types are built from floats, their hashes are composed from the hashes of their two floating-point parts. And an interface&amp;rsquo;s hash is the hash of the value stored in the interface, and not the interface header itself.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;All of this stuff is in private functions, so no, you can&amp;rsquo;t access Go&amp;rsquo;s internal hash for a value in your own code.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;if two things compare equal with == they must have equal hashes (or maps wouldn&amp;rsquo;t work&amp;hellip; this is also the reasoning behind all of the special cases I outlined above). That means that strings hash their bodies, not their headers. And structs compose the hashes of all of their fields. I can&amp;rsquo;t find the code actually implementing that, but the tests and the comparison rules make it clear.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;summary&#34;&gt;summary&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;平台/体系结构相关, &lt;code&gt;func hash&lt;/code&gt;绑定至&lt;code&gt;_type.alg&lt;/code&gt;中, &lt;code&gt;x86&lt;/code&gt;下且支持&lt;code&gt;AES&lt;/code&gt;指令使用基于&lt;code&gt;AES&lt;/code&gt;原语的&lt;code&gt;aeshash&lt;/code&gt;, 否则&amp;hellip;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;float&lt;/code&gt;的计算方式比较特殊, 由于&lt;code&gt;IEEE-754&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;interface&lt;/code&gt;的哈希根据存储其中的&lt;code&gt;hash value&lt;/code&gt;计算出, 而非头部&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;string&lt;/code&gt;, &lt;code&gt;struct&lt;/code&gt; 的哈希值由构成他们的域/字符计算得出, 而非头部&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;golang&lt;/code&gt;定义的&lt;code&gt;hash&lt;/code&gt;均为私有, 但可以通过&lt;code&gt;==&lt;/code&gt;推断二者的&lt;code&gt;hash value&lt;/code&gt;是否相等, &lt;a href=&#34;https://golang.org/ref/spec#Comparison_operators&#34;&gt;但注意 &lt;code&gt;slice&lt;/code&gt;, &lt;code&gt;map&lt;/code&gt;, &lt;code&gt;func&lt;/code&gt;, &lt;code&gt;带有前面3者的array &amp;amp;&amp;amp; struct&lt;/code&gt;不可比较&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+    </item>
+    
+    <item>
+      <title>golang nil interface</title>
+      <link>https://resyon.github.io/posts/golang-nil-interface/</link>
+      <pubDate>Sat, 09 Oct 2021 17:47:39 +0800</pubDate>
+      
+      <guid>https://resyon.github.io/posts/golang-nil-interface/</guid>
+      <description>golang nil interface  ref
+ preparation: structure of interface entry common interface type iface struct { tab *itab data unsafe.Pointer } type itab struct { inter *interfacetype _type *_type link *itab hash uint32 // copy of _type.hash. Used for type switches. 	bad bool // type does not implement interface 	inhash bool // has this itab been added to hash? 	unused [2]byte fun [1]uintptr // variable sized } type interfacetype struct { typ _type pkgpath name mhdr []imethod } interface{} type eface struct { _type *_type data unsafe.</description>
+      <content>&lt;h1 id=&#34;golang-nil-interface&#34;&gt;golang nil interface&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://golang.design/go-questions/interface/dynamic-typing/&#34;&gt;ref&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;preparation-structure-of-interface-entry&#34;&gt;preparation: structure of interface entry&lt;/h2&gt;
+&lt;h3 id=&#34;common-interface&#34;&gt;common interface&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;iface&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;tab&lt;/span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;itab&lt;/span&gt;
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;unsafe&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Pointer&lt;/span&gt;
+}
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;itab&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;inter&lt;/span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;interfacetype&lt;/span&gt;
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;_type&lt;/span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;_type&lt;/span&gt;
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;link&lt;/span&gt;   &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;itab&lt;/span&gt;
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;hash&lt;/span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;uint32&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// copy of _type.hash. Used for type switches.
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#a6e22e&#34;&gt;bad&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt;   &lt;span style=&#34;color:#75715e&#34;&gt;// type does not implement interface
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#a6e22e&#34;&gt;inhash&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt;   &lt;span style=&#34;color:#75715e&#34;&gt;// has this itab been added to hash?
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#a6e22e&#34;&gt;unused&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;fun&lt;/span&gt;    [&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;]&lt;span style=&#34;color:#66d9ef&#34;&gt;uintptr&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// variable sized
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;interfacetype&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;typ&lt;/span&gt;     &lt;span style=&#34;color:#a6e22e&#34;&gt;_type&lt;/span&gt;
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;pkgpath&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;name&lt;/span&gt;
+	&lt;span style=&#34;color:#a6e22e&#34;&gt;mhdr&lt;/span&gt;    []&lt;span style=&#34;color:#a6e22e&#34;&gt;imethod&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;interface&#34;&gt;&lt;code&gt;interface{}&lt;/code&gt;&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;eface&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;_type&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;_type&lt;/span&gt;
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;unsafe&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Pointer&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;nil&#34;&gt;&lt;code&gt;nil&lt;/code&gt;&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;interface nil := type == nil &amp;amp;&amp;amp; data == nil
+struct nil := data == nil&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;common-interface-1&#34;&gt;common interface&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Coder&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt; {
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;code&lt;/span&gt;()
+}
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Gopher&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
+}
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;g&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Gopher&lt;/span&gt;) &lt;span style=&#34;color:#a6e22e&#34;&gt;code&lt;/span&gt;() {
+}
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;() {
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Coder&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;) 		&lt;span style=&#34;color:#75715e&#34;&gt;// true
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;c: %T, %v\n&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;// c: &amp;lt;nil&amp;gt;, &amp;lt;nil&amp;gt;
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;g&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;Gopher&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;g&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)		&lt;span style=&#34;color:#75715e&#34;&gt;// true
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;// declare an interface `g`, type of `g` is still `nil`
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;g: %T, %v\n&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;g&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;g&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;// g: *main.Gopher, &amp;lt;nil&amp;gt;
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+	&lt;span style=&#34;color:#75715e&#34;&gt;// assign interface `c` struct type `g`
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt; = &lt;span style=&#34;color:#a6e22e&#34;&gt;g&lt;/span&gt;
+        &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Println&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)		&lt;span style=&#34;color:#75715e&#34;&gt;// false
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;c: %T, %v\n&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;c&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;// c: *main.Gopher, &amp;lt;nil&amp;gt;
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;output&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;true
+c: &amp;lt;nil&amp;gt;, &amp;lt;nil&amp;gt;
+true
+g: *main.Gopher, &amp;lt;nil&amp;gt;
+false
+c: *main.Gopher, &amp;lt;nil&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;interface-1&#34;&gt;&lt;code&gt;interface{}&lt;/code&gt;&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;() {
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt;{}
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%T, %v\n&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;// &amp;lt;nil&amp;gt;, &amp;lt;nil&amp;gt;
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt; = &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%T, %v\n&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;// int, 8
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;v&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;:=&lt;/span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt;.(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)
+    &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%T, %v\n&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;v&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;v&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;// int, 8
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;output&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;&amp;lt;nil&amp;gt;, &amp;lt;nil&amp;gt;
+int, 8
+int, 8 
+&lt;/code&gt;&lt;/pre&gt;</content>
+    </item>
+    
+    <item>
+      <title>Golang切片使用风格</title>
+      <link>https://resyon.github.io/posts/golang-slice/</link>
+      <pubDate>Sun, 09 May 2021 21:54:38 +0800</pubDate>
+      
+      <guid>https://resyon.github.io/posts/golang-slice/</guid>
+      <description>切片声明  此前特别喜欢用字面量声明一个切片, 即， slice := []int{} , 读了uber go 风格指南后发现，这样其实不大好
+ 此前总是那样做是担心声明的方式var slice []int，slice未初始化，
+然而， 切片的默认值实际是有效的
+切片默认值(nil)使用 </description>
+      <content>&lt;h2 id=&#34;切片声明&#34;&gt;切片声明&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;此前特别喜欢用字面量声明一个切片,
+即， &lt;code&gt;slice := []int{}&lt;/code&gt; ,
+读了&lt;a href=&#34;https://github.com/gocn/translator/blob/master/2019/w38_uber_go_style_guide.md#zero-value-mutexes-are-valid&#34;&gt;uber go 风格指南&lt;/a&gt;后发现，这样其实不大好&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://resyon.github.io/upload/2021/05/image-4f1f94305ece4de2a7ee4f0c2281e518.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;此前总是那样做是担心声明的方式&lt;code&gt;var slice []int&lt;/code&gt;，&lt;code&gt;slice&lt;/code&gt;未初始化，&lt;/p&gt;
+&lt;p&gt;然而， 切片的默认值实际是有效的&lt;/p&gt;
+&lt;h2 id=&#34;切片默认值nil使用&#34;&gt;切片默认值(&lt;code&gt;nil&lt;/code&gt;)使用&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&#34;https://resyon.github.io/upload/2021/05/image-d38fa7064a654779b21ba9e53a09a1b1.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>

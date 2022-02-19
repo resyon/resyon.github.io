@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>golang nil interface :: Resyon&#39;s World</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="golang nil interface  ref
+ preparation: structure of interface entry common interface type iface struct { tab *itab data unsafe.Pointer } type itab struct { inter *interfacetype _type *_type link *itab hash uint32 // copy of _type.hash. Used for type switches. 	bad bool // type does not implement interface 	inhash bool // has this itab been added to hash? 	unused [2]byte fun [1]uintptr // variable sized } type interfacetype struct { typ _type pkgpath name mhdr []imethod } interface{} type eface struct { _type *_type data unsafe." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://resyon.github.io/posts/golang-nil-interface/" />
+
+
+
+
+<link rel="stylesheet" href="https://resyon.github.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://resyon.github.io/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://resyon.github.io/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="https://resyon.github.io/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="" />
+  
+    <meta name="twitter:creator" content="" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="golang nil interface">
+<meta property="og:description" content="golang nil interface  ref
+ preparation: structure of interface entry common interface type iface struct { tab *itab data unsafe.Pointer } type itab struct { inter *interfacetype _type *_type link *itab hash uint32 // copy of _type.hash. Used for type switches. 	bad bool // type does not implement interface 	inhash bool // has this itab been added to hash? 	unused [2]byte fun [1]uintptr // variable sized } type interfacetype struct { typ _type pkgpath name mhdr []imethod } interface{} type eface struct { _type *_type data unsafe." />
+<meta property="og:url" content="https://resyon.github.io/posts/golang-nil-interface/" />
+<meta property="og:site_name" content="Resyon&#39;s World" />
+
+  <meta property="og:image" content="https://resyon.github.io/">
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2021-10-09 17:47:39 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Terminal
+  </div>
+</a>
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://resyon.github.io/posts/golang-nil-interface/">golang nil interface</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2021-10-09
+        
+      </span>
+    
+    
+      <span class="post-author">:: resyon</span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://resyon.github.io/tags/golang/">golang</a>&nbsp;
+    
+  </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <h1 id="golang-nil-interface">golang nil interface<a href="#golang-nil-interface" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<blockquote>
+<p><a href="https://golang.design/go-questions/interface/dynamic-typing/">ref</a></p>
+</blockquote>
+<h2 id="preparation-structure-of-interface-entry">preparation: structure of interface entry<a href="#preparation-structure-of-interface-entry" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="common-interface">common interface<a href="#common-interface" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">iface</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">tab</span>  <span style="color:#f92672">*</span><span style="color:#a6e22e">itab</span>
+	<span style="color:#a6e22e">data</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">itab</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">inter</span>  <span style="color:#f92672">*</span><span style="color:#a6e22e">interfacetype</span>
+	<span style="color:#a6e22e">_type</span>  <span style="color:#f92672">*</span><span style="color:#a6e22e">_type</span>
+	<span style="color:#a6e22e">link</span>   <span style="color:#f92672">*</span><span style="color:#a6e22e">itab</span>
+	<span style="color:#a6e22e">hash</span>   <span style="color:#66d9ef">uint32</span> <span style="color:#75715e">// copy of _type.hash. Used for type switches.
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">bad</span>    <span style="color:#66d9ef">bool</span>   <span style="color:#75715e">// type does not implement interface
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">inhash</span> <span style="color:#66d9ef">bool</span>   <span style="color:#75715e">// has this itab been added to hash?
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">unused</span> [<span style="color:#ae81ff">2</span>]<span style="color:#66d9ef">byte</span>
+	<span style="color:#a6e22e">fun</span>    [<span style="color:#ae81ff">1</span>]<span style="color:#66d9ef">uintptr</span> <span style="color:#75715e">// variable sized
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">interfacetype</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">typ</span>     <span style="color:#a6e22e">_type</span>
+	<span style="color:#a6e22e">pkgpath</span> <span style="color:#a6e22e">name</span>
+	<span style="color:#a6e22e">mhdr</span>    []<span style="color:#a6e22e">imethod</span>
+}
+</code></pre></div><h3 id="interface"><code>interface{}</code><a href="#interface" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">eface</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">_type</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">_type</span>
+    <span style="color:#a6e22e">data</span>  <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>
+}
+</code></pre></div><h2 id="nil"><code>nil</code><a href="#nil" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<blockquote>
+<p>interface nil := type == nil &amp;&amp; data == nil
+struct nil := data == nil</p>
+</blockquote>
+<h3 id="common-interface-1">common interface<a href="#common-interface-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Coder</span> <span style="color:#66d9ef">interface</span> {
+        <span style="color:#a6e22e">code</span>()
+}
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Gopher</span> <span style="color:#66d9ef">struct</span> {
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">g</span> <span style="color:#a6e22e">Gopher</span>) <span style="color:#a6e22e">code</span>() {
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Coder</span>
+        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span>) 		<span style="color:#75715e">// true
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;c: %T, %v\n&#34;</span>, <span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">c</span>) <span style="color:#75715e">// c: &lt;nil&gt;, &lt;nil&gt;
+</span><span style="color:#75715e"></span>
+        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">g</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Gopher</span>
+        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">g</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span>)		<span style="color:#75715e">// true
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// declare an interface `g`, type of `g` is still `nil`
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;g: %T, %v\n&#34;</span>, <span style="color:#a6e22e">g</span>, <span style="color:#a6e22e">g</span>) <span style="color:#75715e">// g: *main.Gopher, &lt;nil&gt;
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">// assign interface `c` struct type `g`
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">c</span> = <span style="color:#a6e22e">g</span>
+        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span>)		<span style="color:#75715e">// false
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;c: %T, %v\n&#34;</span>, <span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">c</span>) <span style="color:#75715e">// c: *main.Gopher, &lt;nil&gt;
+</span><span style="color:#75715e"></span>
+}
+</code></pre></div><blockquote>
+<p>output</p>
+</blockquote>
+<pre tabindex="0"><code>true
+c: &lt;nil&gt;, &lt;nil&gt;
+true
+g: *main.Gopher, &lt;nil&gt;
+false
+c: *main.Gopher, &lt;nil&gt;
+</code></pre><h3 id="interface-1"><code>interface{}</code><a href="#interface-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">interface</span>{}
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%T, %v\n&#34;</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">i</span>) <span style="color:#75715e">// &lt;nil&gt;, &lt;nil&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">i</span> = <span style="color:#ae81ff">8</span>
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%T, %v\n&#34;</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">i</span>) <span style="color:#75715e">// int, 8
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span>  <span style="color:#a6e22e">i</span>.(<span style="color:#66d9ef">int</span>)
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%T, %v\n&#34;</span>, <span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">v</span>) <span style="color:#75715e">// int, 8
+</span><span style="color:#75715e"></span>}
+</code></pre></div><blockquote>
+<p>output</p>
+</blockquote>
+<pre tabindex="0"><code>&lt;nil&gt;, &lt;nil&gt;
+int, 8
+int, 8 
+</code></pre>
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        <span class="button previous">
+            <a href="https://resyon.github.io/posts/go-map-calculate-hash-value/">
+                <span class="button__icon">←</span>
+                <span class="button__text">How does go calculate a hash value for keys in a map?</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://resyon.github.io/posts/unix-pipeline-file-descriptor/">
+                <span class="button__text">UNIX pipeline &amp; file descriptor</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>© Resyon 2022</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://resyon.github.io/assets/main.js"></script>
+<script src="https://resyon.github.io/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

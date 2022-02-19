@@ -142,14 +142,6 @@
         </div>
 
         
-          <span class="post-tags">
-            
-            #<a href="https://resyon.github.io/tags/"></a>&nbsp;
-            
-            #<a href="https://resyon.github.io/tags/"></a>&nbsp;
-            
-          </span>
-        
 
         
 
@@ -169,9 +161,191 @@
         
       </div>
     
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://resyon.github.io/posts/mysql-2pc/">mysql 事务两阶段提交</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-12-16
+          </span>
+          
+            <span class="post-author">:: resyon</span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://resyon.github.io/tags/mysql/">mysql</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            Mysql 事务两阶段提交 overview  准确的说是使用innodb引擎的mysql事务的两阶段提交 redo-log是innodb引擎在存储引擎层面实现的
+例表
+create table t( id int primary key, c int ); 如下查询
+update <code>t</code> set c=c+1 where <code>id</code>=2; 有以下过程
+两阶段提交的必要性 主要是保证redo-log 和 bin-log的一致性。这种必要性体现在异常恢复上。 由常识我们知道 redo-log用于保证事务的原子性和持久性，记录的是物理日志，由存储引擎实现 bin-log用于归档， 记录的逻辑日志，由mysql server 层实现
+若不保证二者同步更新（不使用两阶段提交，即在二者之一完成之后立即提交事务），将出现以下两种情况
+redo-log -&gt; commit -&gt; bin-log 若在commit和bin-log间异常重启，系统能根据redo-log恢复事务，bin-log于是实际上少了一条记录，这就影响了后续对bin-log的使用，如构建从库，恢复到某一检查点
+bin-log -&gt; commit -&gt; redo-log 若在commit和redo-log间异常重启，系统无法恢复事务，而bin-log多了一条记录，而数据库里实际没有，以后用bin-log也会出现与原库不一样的问题
+总结 redo-log和bin-log都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。
+ref 丁奇《MySQL实战45讲》
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/mysql-2pc/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://resyon.github.io/posts/web-security-review-web-security-review/">UNIX pipeline &amp; file descriptor</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-12-11
+          </span>
+          
+            <span class="post-author">:: resyon</span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://resyon.github.io/tags/security/">security</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            web-security test 试题手写40 整个攻击流程（渗透过程） 渗透-信息的收集  PPT
+收集域名信息   whois 查询域名 注册与否，注册域名的详细信息（如域名所有人、域名注册商） tools: whois(kali), 爱站工具网(<a href="https://whois.aizhan.com">https://whois.aizhan.com</a>)、站长之家(<a href="http://whois.chinaz.com">http://whois.chinaz.com</a>)和VirusTotal(<a href="https://www.virustotal.com">https://www.virustotal.com</a>) 备案信息 tools: ICP备案查询网：http://www.beianbeian.com, 天眼查：http://www.tianyancha.com。  收集敏感信息   利用搜索引擎，轻松得到想要的信息，还可以用它来搜集数据库文件，SQL注入，配置信息、源代码泄露、未授权访问和rebots.txt等敏感信息   google 常用语法   通过Burp Suite的Repeater功能，（如运行的Server类型及版本，PHP的版本信息等）  收集子域名信息   因为子域名通常护甲较弱
+子域名检测工具 (eg. Layer子域名挖掘机、K8、wydomain、Sublist3r、dnsmaper、subDomainsBrute、Maltego CE)
+搜索引擎枚举 site: ${target_domain}
+第三方聚合应用枚举 很多第三方服务汇聚了大量DNS数据集，可通过它们检索某个给定域名的子域 名。只需在其搜索栏中输入域名，就可检索到相关的域名信息
+证书透明度公开日志枚举 最简单的方法就是使用搜索引擎搜索一些公开的CT日志
+收集常用端口信息  关注常见应用的默认端口和在端口上运行的服务，便于渗透 tools: Nmap，无状态端口扫描工具Masscan、ZMap和御剑高速TCP端口扫描工具
+指纹识别 指纹是指网站CMS指纹识别、计算机操作系统及Web容器的指纹识别 应用程序一般在html、js、css等文件中包含一些特征码(CMS指纹)，那么当碰到其他网站也存在此特征时，就可以快速识别出该CMS，所以叫作指纹识别。 CMS又称整站系统或文章系统, 常见的CMS有Dedecms（织梦）、Discuz、PHPWEB、PHPWind、PHPCMS、ECShop、Dvbbs、SiteWeaver、ASPCMS、帝国、Z-Blog、WordPress等。  tools: 御剑Web指纹识别、WhatWeb、WebRobo、椰树、轻量WEB指纹识别等
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/web-security-review-web-security-review/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://resyon.github.io/posts/awesome-nil-channel/">awesome way to make use of nil channel</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-12-08
+          </span>
+          
+            <span class="post-author">:: resyon</span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://resyon.github.io/tags/golang/">golang</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            Awesome way to make use of nil channel common Send and receive operations on a nil channel block forver. It’s a well documented behavior
+package main import ( &quot;fmt&quot; ) func main() { var ch chan int go func() { fmt.Println(&quot;ready to read from ch&quot;) fmt.Printf(&quot;get val: %v\n&quot;, &lt;-ch) }() fmt.Println(&quot;ready to write val to ch&quot;) ch &lt;- 17 } got output awesome usage This behavior can be used as a way to dynamically enable and disable case blocks in a select statement.
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/awesome-nil-channel/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://resyon.github.io/posts/go-map-calculate-hash-value/">How does go calculate a hash value for keys in a map?</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-10-10
+          </span>
+          
+            <span class="post-author">:: resyon</span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://resyon.github.io/tags/golang/">golang</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            How does go calculate a hash value for keys in a map?  ref
+original   The language spec doesn’t say, which means that it’s free to change at any time, or differ between implementations.
+The hash algorithm varies somewhat between types and platforms. As of now: On x86 (32 or 64 bit) if the CPU supports AES instructions, the runtime uses aeshash, a hash built on AES primitives, otherwise it uses a function “inspired by” xxHash and cityhash, but different from either.
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/go-map-calculate-hash-value/">Read more →</a>
+        </div>
+        
+      </div>
+    
     <div class="pagination">
   <div class="pagination__buttons">
     
+    
+      <span class="button next">
+        <a href="/posts/page/2/">
+          <span class="button__text">Older posts</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
     
   </div>
 </div>

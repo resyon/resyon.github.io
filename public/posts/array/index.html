@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>数组 :: Resyon&#39;s World</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="binary-search #include&amp;lt;vector&amp;gt;using namespace std; int search(vector&amp;lt;int&amp;gt;&amp;amp; nums, int target) { int i = 0, j = nums.size()-1; //这里的类型别用auto, 否则后续  //mid - 1 可能溢出  int mid; while (i &amp;lt;= j) { mid = (i &#43; j ) / 2; if (nums[mid] == target) { return mid; }else if (nums[mid] &amp;gt; target)	j = mid-1; //注意此处 -1 	else i = mid&#43;1; //以及此处 &#43; 1  //否则容易陷入死循环 	} return -1; } " />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://resyon.github.io/posts/array/" />
+
+
+
+
+<link rel="stylesheet" href="https://resyon.github.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://resyon.github.io/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://resyon.github.io/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="https://resyon.github.io/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="" />
+  
+    <meta name="twitter:creator" content="" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="数组">
+<meta property="og:description" content="binary-search #include&amp;lt;vector&amp;gt;using namespace std; int search(vector&amp;lt;int&amp;gt;&amp;amp; nums, int target) { int i = 0, j = nums.size()-1; //这里的类型别用auto, 否则后续  //mid - 1 可能溢出  int mid; while (i &amp;lt;= j) { mid = (i &#43; j ) / 2; if (nums[mid] == target) { return mid; }else if (nums[mid] &amp;gt; target)	j = mid-1; //注意此处 -1 	else i = mid&#43;1; //以及此处 &#43; 1  //否则容易陷入死循环 	} return -1; } " />
+<meta property="og:url" content="https://resyon.github.io/posts/array/" />
+<meta property="og:site_name" content="Resyon&#39;s World" />
+
+  <meta property="og:image" content="https://resyon.github.io/">
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2021-05-21 07:56:13 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Terminal
+  </div>
+</a>
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://resyon.github.io/posts/array/">数组</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2021-05-21
+        
+      </span>
+    
+    
+      <span class="post-author">:: resyon</span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://resyon.github.io/tags/algorithm/">algorithm</a>&nbsp;
+    
+  </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="binary-searchhttpsleetcode-cncomproblemsbinary-search"><a href="https://leetcode-cn.com/problems/binary-search/">binary-search</a><a href="#binary-searchhttpsleetcode-cncomproblemsbinary-search" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;vector&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">search</span>(vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;&amp;</span> nums, <span style="color:#66d9ef">int</span> target) {
+	<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, j <span style="color:#f92672">=</span> nums.size()<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>; <span style="color:#75715e">//这里的类型别用auto, 否则后续
+</span><span style="color:#75715e"></span>                                <span style="color:#75715e">//mid - 1 可能溢出
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> mid;
+	<span style="color:#66d9ef">while</span> (i <span style="color:#f92672">&lt;=</span> j) {
+		mid <span style="color:#f92672">=</span> (i <span style="color:#f92672">+</span> j ) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>;
+		<span style="color:#66d9ef">if</span> (nums[mid] <span style="color:#f92672">==</span> target) {
+			<span style="color:#66d9ef">return</span> mid;
+		}<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (nums[mid] <span style="color:#f92672">&gt;</span> target)	j <span style="color:#f92672">=</span> mid<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>; <span style="color:#75715e">//注意此处 -1
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">else</span> i <span style="color:#f92672">=</span> mid<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>; <span style="color:#75715e">//以及此处 + 1
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//否则容易陷入死循环
+</span><span style="color:#75715e"></span>	}
+	<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+}
+</code></pre></div>
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        <span class="button previous">
+            <a href="https://resyon.github.io/posts/sudoer-visudo/">
+                <span class="button__icon">←</span>
+                <span class="button__text">Editor for /etc/sudoer</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://resyon.github.io/posts/2022-spring-1/">
+                <span class="button__text">2022春招计划_阶段一</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>© Resyon 2022</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://resyon.github.io/assets/main.js"></script>
+<script src="https://resyon.github.io/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

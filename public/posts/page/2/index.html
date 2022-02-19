@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Posts :: Resyon&#39;s World</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://resyon.github.io/posts/" />
+
+
+
+
+<link rel="stylesheet" href="https://resyon.github.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://resyon.github.io/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://resyon.github.io/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="https://resyon.github.io/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="" />
+  
+    <meta name="twitter:creator" content="" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Posts">
+<meta property="og:description" content="" />
+<meta property="og:url" content="https://resyon.github.io/posts/" />
+<meta property="og:site_name" content="Resyon&#39;s World" />
+
+  
+    <meta property="og:image" content="https://resyon.github.io/img/favicon/green.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+
+
+
+  <link href="/posts/index.xml" rel="alternate" type="application/rss+xml" title="Resyon&#39;s World" />
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Terminal
+  </div>
+</a>
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+  
+  <div class="posts">
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://resyon.github.io/posts/golang-nil-interface/">golang nil interface</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-10-09
+          </span>
+          
+            <span class="post-author">:: resyon</span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://resyon.github.io/tags/golang/">golang</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            golang nil interface  ref
+preparation: structure of interface entry common interface type iface struct { tab *itab data unsafe.Pointer } type itab struct { inter *interfacetype _type *_type link *itab hash uint32 // copy of _type.hash. Used for type switches. 	bad bool // type does not implement interface 	inhash bool // has this itab been added to hash? 	unused [2]byte fun [1]uintptr // variable sized } type interfacetype struct { typ _type pkgpath name mhdr []imethod } interface{} type eface struct { _type *_type data unsafe.
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/golang-nil-interface/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://resyon.github.io/posts/unix-pipeline-file-descriptor/">UNIX pipeline &amp; file descriptor</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-09-11
+          </span>
+          
+            <span class="post-author">:: resyon</span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://resyon.github.io/tags/linux/">linux</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            完成6.s081 lab1 后对pipeline, file descriptor 有了一定了解，做个笔记
+pipeline (pipe)  A pipe is a small kernel buffer exposed to processes as a pair of file descriptors, one for reading and one for writing. Writing data to one end of the pipe makes that data available for reading from the other end of the pipe. Pipes provide a way for processes to communicate.
+使用 int pd[2]; // make pipeline, return pd[0] for read, pd[1] for write if(pipe(pd) &lt; 0){ // handle fail 	fprintf(stderr, &quot;fail to make pipeline\n&quot;); exit(1); } int pid = fork(); if(pid &lt; 0){ // handle fail }else if(pid == 0){ // child 	char cnt = &quot;this is test content from child process&quot;; write(pd[1], cnt, strlen(cnt)); exit(0); }else{ // parent 	char buf[128]; // assume that size of content to read would not exceed buf 	read(pd[0], buf, sizeof(buf)); printf(&quot;get buf from child, buf=&lt;%s&gt;\n&quot;, buf); } file descriptor (fd) fd是对广义上的UNIX file进行引用的一层抽象，这层抽象使得在操作regular file, device, pipeline 等文件时，表面上一致，操作起来简单，(都可使用read(int fd,.
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/unix-pipeline-file-descriptor/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://resyon.github.io/posts/sudoer-visudo/">Editor for /etc/sudoer</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-08-14
+          </span>
+          
+            <span class="post-author">:: resyon</span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://resyon.github.io/tags/linux/">linux</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            新建用户，添加至sudo的若干步骤
+usermod -aG root username 这时候，我在debian上依旧不行 (这是因为/etc/sudoer的配置中，并没有指定root用户组中的成员都可以使用sudo)
+adduser useradd root 还是没用，选择直接编辑/etc/sudoer, 注意到这个文件的权限 通常使用sudoedit进行编辑， 这个时候如果出现语法错误，会非常蛋疼，查了资料后发现， visudo是个更好的选择，visudo不会在/etc/sudoer语法错误时拒绝编辑该文件，还会在保存后语法错误时提示重新编辑
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/sudoer-visudo/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://resyon.github.io/posts/array/">数组</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-05-21
+          </span>
+          
+            <span class="post-author">:: resyon</span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://resyon.github.io/tags/algorithm/">algorithm</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            binary-search #include&lt;vector&gt;using namespace std; int search(vector&lt;int&gt;&amp; nums, int target) { int i = 0, j = nums.size()-1; //这里的类型别用auto, 否则后续  //mid - 1 可能溢出  int mid; while (i &lt;= j) { mid = (i + j ) / 2; if (nums[mid] == target) { return mid; }else if (nums[mid] &gt; target)	j = mid-1; //注意此处 -1 	else i = mid+1; //以及此处 + 1  //否则容易陷入死循环 	} return -1; }
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/array/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://resyon.github.io/posts/2022-spring-1/">2022春招计划_阶段一</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2021-05-21
+          </span>
+          
+            <span class="post-author">:: resyon</span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://resyon.github.io/tags/pending/">pending</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            2022春招应该在2022年2，3月进行，现开始对此进行准备
+Summary 本学期课程主要为数学/算法类，且即将结束，故决定阶段一20210520-20210720系统掌握常见的算法类型
+1.1 基础20210520-20210620 跟随leetcode-master, 数据结构出发
+1.2 提升20210621-20210720 跟随labuladong掌握常见算法套路 选择性oi-wiki
+2 日常20210721- leetcode每日一题
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/2022-spring-1/">Read more →</a>
+        </div>
+        
+      </div>
+    
+    <div class="pagination">
+  <div class="pagination__buttons">
+    
+      <span class="button previous">
+        <a href="/posts/">
+          <span class="button__icon">←</span>
+          <span class="button__text">Newer posts</span>
+        </a>
+      </span>
+    
+    
+      <span class="button next">
+        <a href="/posts/page/3/">
+          <span class="button__text">Older posts</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+    
+  </div>
+</div>
+
+  </div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>© Resyon 2022</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://resyon.github.io/assets/main.js"></script>
+<script src="https://resyon.github.io/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
