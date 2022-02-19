@@ -72,14 +72,14 @@ adduser useradd root 还是没用，选择直接编辑/etc/sudoer, 注意到这�
 <body class="green">
 
 
-<div class="container headings--one-size">
+<div class="container full headings--one-size">
 
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
       <a href="/">
   <div class="logo">
-    Terminal
+    Resyon&#39;s World
   </div>
 </a>
 
@@ -94,11 +94,11 @@ adduser useradd root 还是没用，选择直接编辑/etc/sudoer, 注意到这�
     
       
         
-          <li><a href="/about">About</a></li>
+          <li><a href="/posts/about">About</a></li>
         
       
         
-          <li><a href="/showcase">Showcase</a></li>
+          <li><a href="https://github.com/resyon">Github</a></li>
         
       
       
@@ -110,11 +110,11 @@ adduser useradd root 还是没用，选择直接编辑/etc/sudoer, 注意到这�
   <ul class="menu__inner menu__inner--mobile">
     
       
-        <li><a href="/about">About</a></li>
+        <li><a href="/posts/about">About</a></li>
       
     
       
-        <li><a href="/showcase">Showcase</a></li>
+        <li><a href="https://github.com/resyon">Github</a></li>
       
     
     
@@ -163,7 +163,7 @@ adduser useradd root 还是没用，选择直接编辑/etc/sudoer, 注意到这�
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">adduser useradd root
 </code></pre></div><p>还是没用，选择直接编辑<code>/etc/sudoer</code>,
 注意到这个文件的权限
-<img src="https://resyon.github.io/upload/2021/08/image-45acfb1b60e347239b1a19eaf23609bf.png" alt="image.png">
+<img src="/upload/2021/08/image-45acfb1b60e347239b1a19eaf23609bf.png" alt="image.png">
 通常使用<code>sudoedit</code>进行编辑， 这个时候如果出现语法错误，会非常蛋疼，查了<a href="https://askubuntu.com/questions/73864/how-to-modify-an-invalid-etc-sudoers-file">资料</a>后发现，
 <code>visudo</code>是个更好的选择，<code>visudo</code>不会在<code>/etc/sudoer</code>语法错误时拒绝编辑该文件，还会在保存后语法错误时提示重新编辑
 <img src="2" alt="image.png"></p>

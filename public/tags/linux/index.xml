@@ -16,7 +16,7 @@
       <guid>https://resyon.github.io/posts/unix-pipeline-file-descriptor/</guid>
       <description>完成6.s081 lab1 后对pipeline, file descriptor 有了一定了解，做个笔记
  pipeline (pipe)  A pipe is a small kernel buffer exposed to processes as a pair of file descriptors, one for reading and one for writing. Writing data to one end of the pipe makes that data available for reading from the other end of the pipe. Pipes provide a way for processes to communicate.
- 使用 int pd[2]; // make pipeline, return pd[0] for read, pd[1] for write if(pipe(pd) &amp;lt; 0){ // handle fail 	fprintf(stderr, &amp;#34;fail to make pipeline\n&amp;#34;); exit(1); } int pid = fork(); if(pid &amp;lt; 0){ // handle fail }else if(pid == 0){ // child 	char cnt = &amp;#34;this is test content from child process&amp;#34;; write(pd[1], cnt, strlen(cnt)); exit(0); }else{ // parent 	char buf[128]; // assume that size of content to read would not exceed buf 	read(pd[0], buf, sizeof(buf)); printf(&amp;#34;get buf from child, buf=&amp;lt;%s&amp;gt;\n&amp;#34;, buf); } file descriptor (fd) fd是对广义上的UNIX file进行引用的一层抽象，这层抽象使得在操作regular file, device, pipeline 等文件时，表面上一致，操作起来简单，(都可使用read(int fd,.</description>
+ 使用: int pd[2]; // make pipeline, return pd[0] for read, pd[1] for write if(pipe(pd) &amp;lt; 0){ // handle fail 	fprintf(stderr, &amp;#34;fail to make pipeline\n&amp;#34;); exit(1); } int pid = fork(); if(pid &amp;lt; 0){ // handle fail }else if(pid == 0){ // child 	char cnt = &amp;#34;this is test content from child process&amp;#34;; write(pd[1], cnt, strlen(cnt)); exit(0); }else{ // parent 	char buf[128]; // assume that size of content to read would not exceed buf 	read(pd[0], buf, sizeof(buf)); printf(&amp;#34;get buf from child, buf=&amp;lt;%s&amp;gt;\n&amp;#34;, buf); } file descriptor (fd) fd是对广义上的UNIX file进行引用的一层抽象，这层抽象使得在操作regular file, device, pipeline 等文件时，表面上一致，操作起来简单，(都可使用read(int fd,.</description>
       <content>&lt;blockquote&gt;
 &lt;p&gt;完成&lt;code&gt;6.s081&lt;/code&gt; lab1 后对&lt;code&gt;pipeline&lt;/code&gt;, &lt;code&gt;file descriptor&lt;/code&gt; 有了一定了解，做个笔记&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -24,7 +24,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;A &lt;code&gt;pipe&lt;/code&gt; is a small kernel buffer exposed to processes as a pair of file descriptors, one for reading and one for writing. Writing data to one end of the pipe makes that data available for reading from the other end of the pipe. Pipes provide a way for processes to communicate.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h3 id=&#34;使用&#34;&gt;使用&lt;/h3&gt;
+&lt;h3 id=&#34;使用&#34;&gt;使用:&lt;/h3&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; pd[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;];
 &lt;span style=&#34;color:#75715e&#34;&gt;// make pipeline, return pd[0] for read, pd[1] for write
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(pipe(pd) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;){

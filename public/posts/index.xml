@@ -9,13 +9,20 @@
     <copyright>© Resyon 2022</copyright>
     <lastBuildDate>Sat, 19 Feb 2022 18:47:06 +0800</lastBuildDate><atom:link href="https://resyon.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>My First Post</title>
+      <title>博客迁移</title>
       <link>https://resyon.github.io/posts/my-first-post/</link>
       <pubDate>Sat, 19 Feb 2022 18:47:06 +0800</pubDate>
       
       <guid>https://resyon.github.io/posts/my-first-post/</guid>
-      <description></description>
-      <content></content>
+      <description>博客迁移 之前一直使用 halo 管理博客，这个系统没什么毛病，就是 Java 写的，跑起来实在太占内存了，我的小服务器实在受不了，随便搞点别的，就得把他停下来。还有就是，小服务器不想要了，主要是续费有点贵，平时也用不着。
+现在迁移到了 github page，使用的引擎是 hugo，选了所谓的 Terminal 主题，极简极客风，我个人还是比较满意的，虽说自己肯定是算不上极客。
+感兴趣的朋友可以参考 Host on Github 这篇官方文章，将博客托管至 Github 上。</description>
+      <content>&lt;h1 id=&#34;博客迁移&#34;&gt;博客迁移&lt;/h1&gt;
+&lt;p&gt;之前一直使用 &lt;a href=&#34;https://github.com/halo-dev/halo&#34;&gt;halo&lt;/a&gt; 管理博客，这个系统没什么毛病，就是 &lt;code&gt;Java&lt;/code&gt; 写的，跑起来实在太占内存了，我的小服务器实在受不了，随便搞点别的，就得把他停下来。还有就是，小服务器不想要了，主要是续费有点贵，平时也用不着。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://resyon.github.io/img/halo.png&#34; alt=&#34;占内存的 halo&#34;&gt;&lt;/p&gt;
+&lt;p&gt;现在迁移到了 &lt;a href=&#34;https://resyon.github.io&#34;&gt;github page&lt;/a&gt;，使用的引擎是 &lt;a href=&#34;https://github.com/gohugo/hugo&#34;&gt;hugo&lt;/a&gt;，选了所谓的 &lt;a href=&#34;https://github.com/panr/hugo-theme-terminal&#34;&gt;Terminal&lt;/a&gt; 主题，极简极客风，我个人还是比较满意的，虽说自己肯定是算不上极客。&lt;/p&gt;
+&lt;p&gt;感兴趣的朋友可以参考 &lt;a href=&#34;https://gohugo.io/hosting-and-deployment/hosting-on-github/&#34;&gt;Host on Github&lt;/a&gt; 这篇官方文章，将博客托管至 Github 上。&lt;/p&gt;
+</content>
     </item>
     
     <item>
@@ -76,7 +83,7 @@ update `t` set c=c+1 where `id`=2; 有以下过程
     </item>
     
     <item>
-      <title>UNIX pipeline &amp; file descriptor</title>
+      <title>网安选修课的期末考前急救</title>
       <link>https://resyon.github.io/posts/web-security-review-web-security-review/</link>
       <pubDate>Sat, 11 Dec 2021 19:34:37 +0800</pubDate>
       
@@ -484,7 +491,7 @@ package main import ( &amp;#34;fmt&amp;#34; ) func main() { var ch chan int go f
 &lt;img src=&#34;https://resyon.github.io/upload/2021/12/image-91291c0c90e24bb4b012c102129be6cd.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;awesome-usage&#34;&gt;awesome usage&lt;/h2&gt;
 &lt;p&gt;This behavior can be used as a way to dynamically enable and disable case blocks in a select statement.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;package&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;package&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;
 
 &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt;(
 	&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
@@ -591,7 +598,7 @@ package main import ( &amp;#34;fmt&amp;#34; ) func main() { var ch chan int go f
 &lt;/blockquote&gt;
 &lt;h2 id=&#34;preparation-structure-of-interface-entry&#34;&gt;preparation: structure of interface entry&lt;/h2&gt;
 &lt;h3 id=&#34;common-interface&#34;&gt;common interface&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;iface&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;iface&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
 	&lt;span style=&#34;color:#a6e22e&#34;&gt;tab&lt;/span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;itab&lt;/span&gt;
 	&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;unsafe&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Pointer&lt;/span&gt;
 }
@@ -613,7 +620,7 @@ package main import ( &amp;#34;fmt&amp;#34; ) func main() { var ch chan int go f
 	&lt;span style=&#34;color:#a6e22e&#34;&gt;mhdr&lt;/span&gt;    []&lt;span style=&#34;color:#a6e22e&#34;&gt;imethod&lt;/span&gt;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;interface&#34;&gt;&lt;code&gt;interface{}&lt;/code&gt;&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;eface&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;eface&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; {
     &lt;span style=&#34;color:#a6e22e&#34;&gt;_type&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;_type&lt;/span&gt;
     &lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;unsafe&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Pointer&lt;/span&gt;
 }
@@ -623,7 +630,7 @@ package main import ( &amp;#34;fmt&amp;#34; ) func main() { var ch chan int go f
 struct nil := data == nil&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id=&#34;common-interface-1&#34;&gt;common interface&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Coder&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt; {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Coder&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt; {
         &lt;span style=&#34;color:#a6e22e&#34;&gt;code&lt;/span&gt;()
 }
 
@@ -659,7 +666,7 @@ g: *main.Gopher, &amp;lt;nil&amp;gt;
 false
 c: *main.Gopher, &amp;lt;nil&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;interface-1&#34;&gt;&lt;code&gt;interface{}&lt;/code&gt;&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;() {
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;() {
     &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt;{}
     &lt;span style=&#34;color:#a6e22e&#34;&gt;fmt&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%T, %v\n&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;// &amp;lt;nil&amp;gt;, &amp;lt;nil&amp;gt;
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt; = &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;
@@ -684,7 +691,7 @@ int, 8
       <guid>https://resyon.github.io/posts/unix-pipeline-file-descriptor/</guid>
       <description>完成6.s081 lab1 后对pipeline, file descriptor 有了一定了解，做个笔记
  pipeline (pipe)  A pipe is a small kernel buffer exposed to processes as a pair of file descriptors, one for reading and one for writing. Writing data to one end of the pipe makes that data available for reading from the other end of the pipe. Pipes provide a way for processes to communicate.
- 使用 int pd[2]; // make pipeline, return pd[0] for read, pd[1] for write if(pipe(pd) &amp;lt; 0){ // handle fail 	fprintf(stderr, &amp;#34;fail to make pipeline\n&amp;#34;); exit(1); } int pid = fork(); if(pid &amp;lt; 0){ // handle fail }else if(pid == 0){ // child 	char cnt = &amp;#34;this is test content from child process&amp;#34;; write(pd[1], cnt, strlen(cnt)); exit(0); }else{ // parent 	char buf[128]; // assume that size of content to read would not exceed buf 	read(pd[0], buf, sizeof(buf)); printf(&amp;#34;get buf from child, buf=&amp;lt;%s&amp;gt;\n&amp;#34;, buf); } file descriptor (fd) fd是对广义上的UNIX file进行引用的一层抽象，这层抽象使得在操作regular file, device, pipeline 等文件时，表面上一致，操作起来简单，(都可使用read(int fd,.</description>
+ 使用: int pd[2]; // make pipeline, return pd[0] for read, pd[1] for write if(pipe(pd) &amp;lt; 0){ // handle fail 	fprintf(stderr, &amp;#34;fail to make pipeline\n&amp;#34;); exit(1); } int pid = fork(); if(pid &amp;lt; 0){ // handle fail }else if(pid == 0){ // child 	char cnt = &amp;#34;this is test content from child process&amp;#34;; write(pd[1], cnt, strlen(cnt)); exit(0); }else{ // parent 	char buf[128]; // assume that size of content to read would not exceed buf 	read(pd[0], buf, sizeof(buf)); printf(&amp;#34;get buf from child, buf=&amp;lt;%s&amp;gt;\n&amp;#34;, buf); } file descriptor (fd) fd是对广义上的UNIX file进行引用的一层抽象，这层抽象使得在操作regular file, device, pipeline 等文件时，表面上一致，操作起来简单，(都可使用read(int fd,.</description>
       <content>&lt;blockquote&gt;
 &lt;p&gt;完成&lt;code&gt;6.s081&lt;/code&gt; lab1 后对&lt;code&gt;pipeline&lt;/code&gt;, &lt;code&gt;file descriptor&lt;/code&gt; 有了一定了解，做个笔记&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -692,7 +699,7 @@ int, 8
 &lt;blockquote&gt;
 &lt;p&gt;A &lt;code&gt;pipe&lt;/code&gt; is a small kernel buffer exposed to processes as a pair of file descriptors, one for reading and one for writing. Writing data to one end of the pipe makes that data available for reading from the other end of the pipe. Pipes provide a way for processes to communicate.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h3 id=&#34;使用&#34;&gt;使用&lt;/h3&gt;
+&lt;h3 id=&#34;使用&#34;&gt;使用:&lt;/h3&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; pd[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;];
 &lt;span style=&#34;color:#75715e&#34;&gt;// make pipeline, return pd[0] for read, pd[1] for write
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(pipe(pd) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;){
@@ -898,6 +905,21 @@ adduser useradd root 还是没用，选择直接编辑/etc/sudoer, 注意到这�
 &lt;p&gt;然而， 切片的默认值实际是有效的&lt;/p&gt;
 &lt;h2 id=&#34;切片默认值nil使用&#34;&gt;切片默认值(&lt;code&gt;nil&lt;/code&gt;)使用&lt;/h2&gt;
 &lt;p&gt;&lt;img src=&#34;https://resyon.github.io/upload/2021/05/image-d38fa7064a654779b21ba9e53a09a1b1.png&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
+      <title>About Resyon</title>
+      <link>https://resyon.github.io/posts/about/</link>
+      <pubDate>Sat, 08 May 2021 13:45:42 +0800</pubDate>
+      
+      <guid>https://resyon.github.io/posts/about/</guid>
+      <description>About Me 关于我，普通的19级在校学生，惯用Golang/Java/C， 不大喜欢Python， 会整点web的后端开发，对中间件有些兴趣。业余看些动漫，人生没啥追求，唯一的愿望是快乐。
+About Resyon&amp;rsquo;s World 关于本站，不会有多少访问量的个人博客，主要用于记录一些个人学习中的笔记，我喜欢halo这个博客系统的原因之一是使用体验不错，还是用java写的，这样哪天我想给它加些新功能会容易些，他的生态也不错，现在用的主题我颇为喜欢。</description>
+      <content>&lt;h2 id=&#34;about-me&#34;&gt;About Me&lt;/h2&gt;
+&lt;p&gt;关于我，普通的19级在校学生，惯用&lt;code&gt;Golang&lt;/code&gt;/&lt;code&gt;Java&lt;/code&gt;/&lt;code&gt;C&lt;/code&gt;， 不大喜欢&lt;code&gt;Python&lt;/code&gt;， 会整点&lt;code&gt;web&lt;/code&gt;的后端开发，对中间件有些兴趣。业余看些动漫，人生没啥追求，唯一的愿望是快乐。&lt;/p&gt;
+&lt;h2 id=&#34;about-resyons-world&#34;&gt;About Resyon&amp;rsquo;s World&lt;/h2&gt;
+&lt;p&gt;关于本站，不会有多少访问量的个人博客，主要用于记录一些个人学习中的笔记，我喜欢&lt;code&gt;halo&lt;/code&gt;这个博客系统的原因之一是使用体验不错，还是用&lt;code&gt;java&lt;/code&gt;写的，这样哪天我想给它加些新功能会容易些，他的生态也不错，现在用的主题我颇为喜欢。&lt;/p&gt;
 </content>
     </item>
     

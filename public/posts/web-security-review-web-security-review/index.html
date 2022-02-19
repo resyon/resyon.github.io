@@ -2,18 +2,11 @@
 <html lang="en">
 <head>
   
-    <title>UNIX pipeline &amp; file descriptor :: Resyon&#39;s World</title>
+    <title>网安选修课的期末考前急救 :: Resyon&#39;s World</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="web-security test 试题手写40 整个攻击流程（渗透过程） 渗透-信息的收集  PPT
-  收集域名信息   whois 查询域名 注册与否，注册域名的详细信息（如域名所有人、域名注册商） tools: whois(kali), 爱站工具网(https://whois.aizhan.com)、站长之家(http://whois.chinaz.com)和VirusTotal(https://www.virustotal.com) 备案信息 tools: ICP备案查询网：http://www.beianbeian.com, 天眼查：http://www.tianyancha.com。  收集敏感信息   利用搜索引擎，轻松得到想要的信息，还可以用它来搜集数据库文件，SQL注入，配置信息、源代码泄露、未授权访问和rebots.txt等敏感信息   google 常用语法   通过Burp Suite的Repeater功能，（如运行的Server类型及版本，PHP的版本信息等）  收集子域名信息   因为子域名通常护甲较弱
-   子域名检测工具 (eg. Layer子域名挖掘机、K8、wydomain、Sublist3r、dnsmaper、subDomainsBrute、Maltego CE)
-  搜索引擎枚举 site: ${target_domain}
-  第三方聚合应用枚举 很多第三方服务汇聚了大量DNS数据集，可通过它们检索某个给定域名的子域 名。只需在其搜索栏中输入域名，就可检索到相关的域名信息
-  证书透明度公开日志枚举 最简单的方法就是使用搜索引擎搜索一些公开的CT日志
-  收集常用端口信息  关注常见应用的默认端口和在端口上运行的服务，便于渗透 tools: Nmap，无状态端口扫描工具Masscan、ZMap和御剑高速TCP端口扫描工具
-指纹识别 指纹是指网站CMS指纹识别、计算机操作系统及Web容器的指纹识别 应用程序一般在html、js、css等文件中包含一些特征码(CMS指纹)，那么当碰到其他网站也存在此特征时，就可以快速识别出该CMS，所以叫作指纹识别。 CMS又称整站系统或文章系统, 常见的CMS有Dedecms（织梦）、Discuz、PHPWEB、PHPWind、PHPCMS、ECShop、Dvbbs、SiteWeaver、ASPCMS、帝国、Z-Blog、WordPress等。  tools: 御剑Web指纹识别、WhatWeb、WebRobo、椰树、轻量WEB指纹识别等" />
+<meta name="description" content="本人应付考试的网安速通缪记" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://resyon.github.io/posts/web-security-review-web-security-review/" />
@@ -47,15 +40,8 @@
 
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="UNIX pipeline &amp; file descriptor">
-<meta property="og:description" content="web-security test 试题手写40 整个攻击流程（渗透过程） 渗透-信息的收集  PPT
-  收集域名信息   whois 查询域名 注册与否，注册域名的详细信息（如域名所有人、域名注册商） tools: whois(kali), 爱站工具网(https://whois.aizhan.com)、站长之家(http://whois.chinaz.com)和VirusTotal(https://www.virustotal.com) 备案信息 tools: ICP备案查询网：http://www.beianbeian.com, 天眼查：http://www.tianyancha.com。  收集敏感信息   利用搜索引擎，轻松得到想要的信息，还可以用它来搜集数据库文件，SQL注入，配置信息、源代码泄露、未授权访问和rebots.txt等敏感信息   google 常用语法   通过Burp Suite的Repeater功能，（如运行的Server类型及版本，PHP的版本信息等）  收集子域名信息   因为子域名通常护甲较弱
-   子域名检测工具 (eg. Layer子域名挖掘机、K8、wydomain、Sublist3r、dnsmaper、subDomainsBrute、Maltego CE)
-  搜索引擎枚举 site: ${target_domain}
-  第三方聚合应用枚举 很多第三方服务汇聚了大量DNS数据集，可通过它们检索某个给定域名的子域 名。只需在其搜索栏中输入域名，就可检索到相关的域名信息
-  证书透明度公开日志枚举 最简单的方法就是使用搜索引擎搜索一些公开的CT日志
-  收集常用端口信息  关注常见应用的默认端口和在端口上运行的服务，便于渗透 tools: Nmap，无状态端口扫描工具Masscan、ZMap和御剑高速TCP端口扫描工具
-指纹识别 指纹是指网站CMS指纹识别、计算机操作系统及Web容器的指纹识别 应用程序一般在html、js、css等文件中包含一些特征码(CMS指纹)，那么当碰到其他网站也存在此特征时，就可以快速识别出该CMS，所以叫作指纹识别。 CMS又称整站系统或文章系统, 常见的CMS有Dedecms（织梦）、Discuz、PHPWEB、PHPWind、PHPCMS、ECShop、Dvbbs、SiteWeaver、ASPCMS、帝国、Z-Blog、WordPress等。  tools: 御剑Web指纹识别、WhatWeb、WebRobo、椰树、轻量WEB指纹识别等" />
+<meta property="og:title" content="网安选修课的期末考前急救">
+<meta property="og:description" content="本人应付考试的网安速通缪记" />
 <meta property="og:url" content="https://resyon.github.io/posts/web-security-review-web-security-review/" />
 <meta property="og:site_name" content="Resyon&#39;s World" />
 
@@ -82,14 +68,14 @@
 <body class="green">
 
 
-<div class="container headings--one-size">
+<div class="container full headings--one-size">
 
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
       <a href="/">
   <div class="logo">
-    Terminal
+    Resyon&#39;s World
   </div>
 </a>
 
@@ -104,11 +90,11 @@
     
       
         
-          <li><a href="/about">About</a></li>
+          <li><a href="/posts/about">About</a></li>
         
       
         
-          <li><a href="/showcase">Showcase</a></li>
+          <li><a href="https://github.com/resyon">Github</a></li>
         
       
       
@@ -120,11 +106,11 @@
   <ul class="menu__inner menu__inner--mobile">
     
       
-        <li><a href="/about">About</a></li>
+        <li><a href="/posts/about">About</a></li>
       
     
       
-        <li><a href="/showcase">Showcase</a></li>
+        <li><a href="https://github.com/resyon">Github</a></li>
       
     
     
@@ -139,7 +125,7 @@
     
 <div class="post">
   <h1 class="post-title">
-    <a href="https://resyon.github.io/posts/web-security-review-web-security-review/">UNIX pipeline &amp; file descriptor</a></h1>
+    <a href="https://resyon.github.io/posts/web-security-review-web-security-review/">网安选修课的期末考前急救</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -169,7 +155,7 @@
         <h1 id="web-security-test">web-security test<a href="#web-security-test" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
 <h2 id="试题手写40">试题手写40<a href="#试题手写40" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="整个攻击流程渗透过程">整个攻击流程（渗透过程）<a href="#整个攻击流程渗透过程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<p><img src="https://resyon.github.io/upload/2021/12/image-6df3aeb93bde491b839d3a8a05c4a944.png" alt="image.png"></p>
+<p><img src="/upload/2021/12/image-6df3aeb93bde491b839d3a8a05c4a944.png" alt="image.png"></p>
 <h4 id="渗透-信息的收集">渗透-信息的收集<a href="#渗透-信息的收集" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <blockquote>
 <p><a href="https://docs.google.com/presentation/d/1FqPgcRbEXPzcgWJy71Kef9oWL97BUTc4Spb0BTJmYyY/edit?usp=sharing">PPT</a></p>
@@ -192,7 +178,7 @@ tools: <code>ICP备案查询网</code>：http://www.beianbeian.com, <code>天眼
 </ul>
 <blockquote>
 <p>google 常用语法
-<img src="https://resyon.github.io/upload/2021/12/image-b041a8198d7c40109ed3f4c5b8613e6a.png" alt="image.png"></p>
+<img src="/upload/2021/12/image-b041a8198d7c40109ed3f4c5b8613e6a.png" alt="image.png"></p>
 </blockquote>
 <ul>
 <li>通过<code>Burp Suite</code>的<code>Repeater</code>功能，（如运行的Server类型及版本，PHP的版本信息等）</li>
@@ -264,17 +250,17 @@ CMS又称整站系统或文章系统, 常见的CMS有Dedecms（织梦）、Discu
 <blockquote>
 <p><a href="https://docs.google.com/presentation/d/1FqPgcRbEXPzcgWJy71Kef9oWL97BUTc4Spb0BTJmYyY/edit?usp=sharing">web, php, mysql, etc 网安入门 ppt</a></p>
 </blockquote>
-<p><img src="https://resyon.github.io/upload/2021/12/image-2b150c9ecbad4114a85cfddc3f5beda4.png" alt="image.png">
-<img src="https://resyon.github.io/upload/2021/12/image-d5537aaf28244053816285b340304493.png" alt="image.png">
-<img src="https://resyon.github.io/upload/2021/12/image-6bbd4f4973a4456788762a8ef25d87e7.png" alt="image.png">
-<img src="https://resyon.github.io/upload/2021/12/image-2293c0d9f06f40bba5b297d709ab033f.png" alt="image.png">
-<img src="https://resyon.github.io/upload/2021/12/image-0418374bc0aa483d9e7d15f1755bef8d.png" alt="image.png">
-<img src="https://resyon.github.io/upload/2021/12/image-8afcc2d81e8c410aa5c2b7a5ae050e06.png" alt="image.png"></p>
+<p><img src="/upload/2021/12/image-2b150c9ecbad4114a85cfddc3f5beda4.png" alt="image.png">
+<img src="/upload/2021/12/image-d5537aaf28244053816285b340304493.png" alt="image.png">
+<img src="/upload/2021/12/image-6bbd4f4973a4456788762a8ef25d87e7.png" alt="image.png">
+<img src="/upload/2021/12/image-2293c0d9f06f40bba5b297d709ab033f.png" alt="image.png">
+<img src="/upload/2021/12/image-0418374bc0aa483d9e7d15f1755bef8d.png" alt="image.png">
+<img src="/upload/2021/12/image-8afcc2d81e8c410aa5c2b7a5ae050e06.png" alt="image.png"></p>
 <h3 id="web框架怎样的结构哪三层作用是什么">web框架怎样的结构，哪三层，作用是什么<a href="#web框架怎样的结构哪三层作用是什么" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <blockquote>
 <p><del>下面给的原答案好像有点问题</del>
 说的可能是 <a href="https://developer.aliyun.com/article/45632">这个</a>
-<img src="https://resyon.github.io/upload/2021/12/image-ad5b8643660b40b79d406f882cf68405.png" alt="image.png"></p>
+<img src="/upload/2021/12/image-ad5b8643660b40b79d406f882cf68405.png" alt="image.png"></p>
 </blockquote>
 <p>web应用-&gt;应用服务器-&gt;数据库服务器</p>
 <ul>
@@ -340,12 +326,12 @@ nmap -sV 192.168.0.105 <span style="color:#75715e"># 检测开放端口对应的
 <span style="color:#75715e"># 探测防火墙状态  </span>
 nmap -sF -T4 192.168.0.105 <span style="color:#75715e"># FIN扫描用于识别端口是否关闭，RST: 端口关闭，否则是open或 filtered状态.</span>
 
-</code></pre></div><p><img src="https://resyon.github.io/upload/2021/12/image-2b222cb254a2483eac14c1d169a5f093.png" alt="image.png"></p>
+</code></pre></div><p><img src="/upload/2021/12/image-2b222cb254a2483eac14c1d169a5f093.png" alt="image.png"></p>
 <h4 id="sqlmap">sqlmap<a href="#sqlmap" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <blockquote>
 <p><a href="https://docs.google.com/presentation/d/1RTnsCI0q02FCXouj4AYTvYbsAS-vo97keWnRdWRe-pQ/edit?usp=sharing">ppt</a></p>
 </blockquote>
-<p><img src="https://resyon.github.io/upload/2021/12/image-4b322e227b804a6cbd763c0f357ee550.png" alt="image.png"></p>
+<p><img src="/upload/2021/12/image-4b322e227b804a6cbd763c0f357ee550.png" alt="image.png"></p>
 <p>使用</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 扫单个url, url都加双引号就对了</span>
 sqlmap.py -u <span style="color:#e6db74">&#34;http://192.168.1.104/sql1/Less-1/?id=1&amp;uid=2&#34;</span>
@@ -385,8 +371,8 @@ sqlmap.py -u “http://127.0.0.1/sql/Less-1/?id<span style="color:#f92672">=</sp
 2、参数带入数据库查询：传入的参数拼接到SQL语句，且带入数据库查询</p>
 <h4 id="考点">考点<a href="#考点" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>虚拟机下完成union boolean 报错注入
-<img src="https://resyon.github.io/upload/2021/12/image-81e503bcb28b41128b1162536612347e.png" alt="image.png">
-<img src="https://resyon.github.io/upload/2021/12/image-5a6640925c8c4076a3049f7b750a909f.png" alt="image.png"></p>
+<img src="/upload/2021/12/image-81e503bcb28b41128b1162536612347e.png" alt="image.png">
+<img src="/upload/2021/12/image-5a6640925c8c4076a3049f7b750a909f.png" alt="image.png"></p>
 <h3 id="文件上传">文件上传<a href="#文件上传" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <blockquote>
 <p><a href="https://docs.google.com/presentation/d/1XUfC7W_sLhVOxO8n_CksYJIxchn31_TatbjwG_JTHKk/edit?usp=sharing">ppt</a></p>
@@ -478,8 +464,8 @@ http://127.0.0.1/dvwa/vulnerabilities/csrf/?password_new=45&amp;password_conf=45
 </li>
 <li>
 <p>中等的话
-<img src="https://resyon.github.io/upload/2021/12/image-5176172a38b24276947c3a14945a2a64.png" alt="image.png">
-<img src="https://resyon.github.io/upload/2021/12/image-0deae3d355b0474c809a8a2e5e3dc52c.png" alt="image.png"></p>
+<img src="/upload/2021/12/image-5176172a38b24276947c3a14945a2a64.png" alt="image.png">
+<img src="/upload/2021/12/image-0deae3d355b0474c809a8a2e5e3dc52c.png" alt="image.png"></p>
 </li>
 </ol>
 <h2 id="杂项">杂项<a href="#杂项" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>

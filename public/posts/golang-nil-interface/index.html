@@ -70,14 +70,14 @@
 <body class="green">
 
 
-<div class="container headings--one-size">
+<div class="container full headings--one-size">
 
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
       <a href="/">
   <div class="logo">
-    Terminal
+    Resyon&#39;s World
   </div>
 </a>
 
@@ -92,11 +92,11 @@
     
       
         
-          <li><a href="/about">About</a></li>
+          <li><a href="/posts/about">About</a></li>
         
       
         
-          <li><a href="/showcase">Showcase</a></li>
+          <li><a href="https://github.com/resyon">Github</a></li>
         
       
       
@@ -108,11 +108,11 @@
   <ul class="menu__inner menu__inner--mobile">
     
       
-        <li><a href="/about">About</a></li>
+        <li><a href="/posts/about">About</a></li>
       
     
       
-        <li><a href="/showcase">Showcase</a></li>
+        <li><a href="https://github.com/resyon">Github</a></li>
       
     
     
@@ -160,7 +160,7 @@
 </blockquote>
 <h2 id="preparation-structure-of-interface-entry">preparation: structure of interface entry<a href="#preparation-structure-of-interface-entry" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="common-interface">common interface<a href="#common-interface" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">iface</span> <span style="color:#66d9ef">struct</span> {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">iface</span> <span style="color:#66d9ef">struct</span> {
 	<span style="color:#a6e22e">tab</span>  <span style="color:#f92672">*</span><span style="color:#a6e22e">itab</span>
 	<span style="color:#a6e22e">data</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>
 }
@@ -182,7 +182,7 @@
 	<span style="color:#a6e22e">mhdr</span>    []<span style="color:#a6e22e">imethod</span>
 }
 </code></pre></div><h3 id="interface"><code>interface{}</code><a href="#interface" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">eface</span> <span style="color:#66d9ef">struct</span> {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">eface</span> <span style="color:#66d9ef">struct</span> {
     <span style="color:#a6e22e">_type</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">_type</span>
     <span style="color:#a6e22e">data</span>  <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>
 }
@@ -192,7 +192,7 @@
 struct nil := data == nil</p>
 </blockquote>
 <h3 id="common-interface-1">common interface<a href="#common-interface-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Coder</span> <span style="color:#66d9ef">interface</span> {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Coder</span> <span style="color:#66d9ef">interface</span> {
         <span style="color:#a6e22e">code</span>()
 }
 
@@ -228,7 +228,7 @@ g: *main.Gopher, &lt;nil&gt;
 false
 c: *main.Gopher, &lt;nil&gt;
 </code></pre><h3 id="interface-1"><code>interface{}</code><a href="#interface-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
     <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">interface</span>{}
     <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%T, %v\n&#34;</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">i</span>) <span style="color:#75715e">// &lt;nil&gt;, &lt;nil&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#a6e22e">i</span> = <span style="color:#ae81ff">8</span>

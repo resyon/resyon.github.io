@@ -70,14 +70,14 @@
 <body class="green">
 
 
-<div class="container headings--one-size">
+<div class="container full headings--one-size">
 
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
       <a href="/">
   <div class="logo">
-    Terminal
+    Resyon&#39;s World
   </div>
 </a>
 
@@ -92,11 +92,11 @@
     
       
         
-          <li><a href="/about">About</a></li>
+          <li><a href="/posts/about">About</a></li>
         
       
         
-          <li><a href="/showcase">Showcase</a></li>
+          <li><a href="https://github.com/resyon">Github</a></li>
         
       
       
@@ -108,11 +108,11 @@
   <ul class="menu__inner menu__inner--mobile">
     
       
-        <li><a href="/about">About</a></li>
+        <li><a href="/posts/about">About</a></li>
       
     
       
-        <li><a href="/showcase">Showcase</a></li>
+        <li><a href="https://github.com/resyon">Github</a></li>
       
     
     
@@ -157,7 +157,7 @@
           
             完成6.s081 lab1 后对pipeline, file descriptor 有了一定了解，做个笔记
 pipeline (pipe)  A pipe is a small kernel buffer exposed to processes as a pair of file descriptors, one for reading and one for writing. Writing data to one end of the pipe makes that data available for reading from the other end of the pipe. Pipes provide a way for processes to communicate.
-使用 int pd[2]; // make pipeline, return pd[0] for read, pd[1] for write if(pipe(pd) &lt; 0){ // handle fail 	fprintf(stderr, &quot;fail to make pipeline\n&quot;); exit(1); } int pid = fork(); if(pid &lt; 0){ // handle fail }else if(pid == 0){ // child 	char cnt = &quot;this is test content from child process&quot;; write(pd[1], cnt, strlen(cnt)); exit(0); }else{ // parent 	char buf[128]; // assume that size of content to read would not exceed buf 	read(pd[0], buf, sizeof(buf)); printf(&quot;get buf from child, buf=&lt;%s&gt;\n&quot;, buf); } file descriptor (fd) fd是对广义上的UNIX file进行引用的一层抽象，这层抽象使得在操作regular file, device, pipeline 等文件时，表面上一致，操作起来简单，(都可使用read(int fd,.
+使用: int pd[2]; // make pipeline, return pd[0] for read, pd[1] for write if(pipe(pd) &lt; 0){ // handle fail 	fprintf(stderr, &quot;fail to make pipeline\n&quot;); exit(1); } int pid = fork(); if(pid &lt; 0){ // handle fail }else if(pid == 0){ // child 	char cnt = &quot;this is test content from child process&quot;; write(pd[1], cnt, strlen(cnt)); exit(0); }else{ // parent 	char buf[128]; // assume that size of content to read would not exceed buf 	read(pd[0], buf, sizeof(buf)); printf(&quot;get buf from child, buf=&lt;%s&gt;\n&quot;, buf); } file descriptor (fd) fd是对广义上的UNIX file进行引用的一层抽象，这层抽象使得在操作regular file, device, pipeline 等文件时，表面上一致，操作起来简单，(都可使用read(int fd,.
           
         </div>
 
