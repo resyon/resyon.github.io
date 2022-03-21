@@ -19,7 +19,7 @@ draft = false
 1. fmt.Scanf: 和 C 一样
 2. fmt.Scan: 同上
 3. fmt.Scanln: 和名字不一样，**他遇到空格会停下**
-4. strings.Fields(string) -> string: 将字符串按空格分开
+4. strings.Fields(string) -> []string: 将字符串按空格分开
 5. bufio.Reader.ReadBytes(byte) -> ([]byte, error): 读取目标字符前的所有字符
 
 ## 输入
