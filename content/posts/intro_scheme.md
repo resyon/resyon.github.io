@@ -1,8 +1,8 @@
 ---
-title: "Intro_scheme"
+title: "Intro To Scheme"
 date: 2023-04-30T10:01:41+08:00
 draft: false 
-tags : ["scheme", "lisp", "SICP"]
+tags : ["scheme", "LISP", "SICP"]
 ---
 
 # black_box abstraction
@@ -16,26 +16,33 @@ intro to mit-scheme
 ```scheme
 ; number
 3
+; operator
+-
+```
+
+### combination of primitive elements
+
+```scheme
 ; combination of operands and operator-
 (+ 3 17.4 5)
 ; a more complex combination
 (+ 3 (* 5 6) 8 2)
-```
-### combination of primitive elements
-
-```scheme
 ; define a value
 (define A (* 5 5)) ; def A=5*5
 (* A A); 5*5*5*5
+(define B (+ A ( * 5 A)))
+(+ A (/ B 5)) ; 65
 ```
 
 ### primitive procedures
 
-```scheme
-(define B (+ A ( * 5 A)))
-(+ A (/ B 5)) ; 65
+> Attention
+> define without '()' output a value
+> otherwide a proceduce
 
-; define a produre
+```scheme
+
+; define a procedure
 (define (square x)(* x x))
 (square 10) ; 100
 ; the same as below
