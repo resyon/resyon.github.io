@@ -1,10 +1,11 @@
 ---
 title: "SICP_Lec_1b"
 date: 2023-04-30T19:44:28+08:00
+tags : ["scheme", "LISP", "SICP"]
 draft: false 
 ---
 
-# substitution
+# Recursive
 
 Some prossible methods to implement operator+. 
 
@@ -19,8 +20,7 @@ There exists some primitive procedures, which are implemented in other method fi
 (define (1+ x) ...)
 ```
 
-## recursion
-
+**eg.1 operator+**
 ```scheme
 
 ; provided that x is non-negative integer
@@ -30,8 +30,8 @@ There exists some primitive procedures, which are implemented in other method fi
     (+ (1- x) (1+ y)))
 
 ```
+an instance
 
-**eg.1 operator+**
 ```scheme
 (+ 3 4)
 ```
