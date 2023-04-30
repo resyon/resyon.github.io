@@ -1,5 +1,5 @@
 ---
-title: "Intro To Scheme"
+title: "SICP_Lec_1a"
 date: 2023-04-30T10:01:41+08:00
 draft: false 
 tags : ["scheme", "LISP", "SICP"]
