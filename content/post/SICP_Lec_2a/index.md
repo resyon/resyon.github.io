@@ -43,7 +43,6 @@ Following formula is designed to find value of
 
 $$ 
 \frac{\pi}{8} = 
-
 \lim_{b\to+\infty}\sum\nolimits_{i=a;by4}^{b}\frac{1}{{i(i+1)}}
 $$
 
