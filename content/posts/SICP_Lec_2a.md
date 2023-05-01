@@ -2,6 +2,7 @@
 title: "SICP_Lec_2a"
 date: 2023-04-30T20:21:15+08:00
 tags : ["scheme", "LISP", "SICP"]
+math : true
 draft: false 
 ---
 
