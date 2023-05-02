@@ -17,7 +17,7 @@ subtitle = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 
 [sidebar.avatar]
 enabled = true
-local = true
+local = false
 src = "img/avatar.png"
 
 [article]
@@ -64,7 +64,7 @@ src = ""
 
 [colorScheme]
 toggle = true
-default = "auto"
+default = "dark"
 
 [imageProcessing.cover]
 enabled = true
