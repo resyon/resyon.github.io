@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>2022-Spring on Example Site</title><link>https://resyon.netlify.app/tags/2022-spring/</link><description>Recent content in 2022-Spring on Example Site</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 06 Mar 2022 15:45:12 +0800</lastBuildDate><atom:link href="https://resyon.netlify.app/tags/2022-spring/index.xml" rel="self" type="application/rss+xml"/><item><title>Redis 八股</title><link>https://resyon.netlify.app/p/redis-%E5%85%AB%E8%82%A1/</link><pubDate>Sun, 06 Mar 2022 15:45:12 +0800</pubDate><guid>https://resyon.netlify.app/p/redis-%E5%85%AB%E8%82%A1/</guid><description>&lt;h1 id="redis-总结">Redis 总结&lt;/h1>
+&lt;h2 id="redis-对象系统">Redis 对象系统&lt;/h2>
+&lt;ol>
+&lt;li>便于实现内存回收。为 &lt;code>C&lt;/code> 这种没有 &lt;code>GC&lt;/code> 的语言实现了基于 ***** 引用计数 ** 的垃圾回收&lt;/li>
+&lt;li>对象共享。多个相同的键可以共享同一块内存空间，节约资源&lt;/li>
+&lt;/ol>
+&lt;p>Redis 只对包含整数的字符串进行共享，主要原因在于共享其余更复杂的对象，在缓存的对象池中验证的成本过高，节省的少量空间不抵 CPU 消耗，实际仍是时间和空间的权衡&lt;/p>
+&lt;h2 id="redis-持久化">Redis 持久化&lt;/h2>
+&lt;blockquote>
+&lt;p>&lt;strong>Redis 状态&lt;/strong> 指 Redis 中非空的数据库 及 其中的键值对&lt;/p>
+&lt;/blockquote>
+&lt;p>持久化是指 保存和恢复 Redis 状态
+主要有 AOF, RDB 两种&lt;/p>
+&lt;h3 id="载入">载入&lt;/h3>
+&lt;p>没有专门的命令用于载入 &lt;code>AOF&lt;/code> &lt;code>RDB&lt;/code> 文件，Redis 会在启动时自动载入，并且 &lt;strong>优先&lt;/strong> 载入 AOF 文件（AOF 的更新相对频繁些，丢失的键值对相对较少）&lt;/p>
+&lt;h2 id="redis-分布式锁">Redis 分布式锁&lt;/h2>
+&lt;h3 id="定义">定义&lt;/h3>
+&lt;p>分布式锁是控制分布式系统或不同系统之间共同访问共享资源的一种锁实现.&lt;/p>
+&lt;h3 id="特征">特征&lt;/h3>
+&lt;ul>
+&lt;li>互斥&lt;/li>
+&lt;li>超时释放. 便面死锁&lt;/li>
+&lt;li>可重入. 一个线程在持有锁的情况可以对其再次加锁, 防止锁在线程执行完临界区操作之前释放&lt;/li>
+&lt;li>高性能, 高可用, 低开销&lt;/li>
+&lt;/ul>
+&lt;h3 id="单机分布式锁">单机分布式锁&lt;/h3>
+&lt;h4 id="10-setnx">1.0 SETNX&lt;/h4>
+&lt;p>&lt;strong>使用&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">SETNX ${key} ${value}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">EXPIRE ${key} ${time_in_second}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">do sth
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">DEL ${key}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>原理&lt;/strong>: &lt;code>SETNX&lt;/code>: &lt;code>key&lt;/code> 不存在则设置, 否则不做任何动作&lt;/p>
+&lt;p>&lt;strong>优点&lt;/strong>: 简单
+&lt;strong>缺点&lt;/strong>: &lt;code>SETNX&lt;/code>, &lt;code>EXPIRE&lt;/code> 两条指令实现超时删除, 不为原子操作, 若在两条指令间发生意外, 将死锁&lt;/p>
+&lt;h4 id="v20-扩展-set">v2.0 扩展 SET&lt;/h4>
+&lt;p>&lt;strong>使用&lt;/strong>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">SET ${key} ${value} NX EX ${expire_time_in_second}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">do sth
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">DEL ${key}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>原理&lt;/strong>: 同 &lt;code>SETNX&lt;/code>, 但设置值和设置超时两个动作为原子操作&lt;/p>
+&lt;p>&lt;strong>问题&lt;/strong>:&lt;/p>
+&lt;ol>
+&lt;li>提前释放: A 执行过程中, 超时, 键被删除, B 成功获得锁&lt;/li>
+&lt;li>误删: 上一过程中的 A 执行完成后, 仍然删除键, 导致 B 获得的锁被误删&lt;/li>
+&lt;/ol>
+&lt;h4 id="v21-删除安全的-set">v2.1 删除安全的 SET&lt;/h4>
+&lt;p>&lt;strong>解决&lt;/strong>:&lt;/p>
+&lt;ol>
+&lt;li>避免在耗时过长的操作中使用分布式锁; 使用 &lt;code>Redisson&lt;/code> 续命&lt;/li>
+&lt;li>将值设置为随机数, 释放锁时检查&lt;/li>
+&lt;/ol>
+&lt;p>&lt;strong>使用&lt;/strong>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">SET ${key} ${random_value} NX EX ${expire_time_in_second}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">do sth
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">check_key_valid &amp;amp;&amp;amp; DEL ${key}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>问题&lt;/strong>: &lt;code>check_key_valid&lt;/code> &amp;amp;&amp;amp; &lt;code>DEL ${key}&lt;/code> 不为原子操作&lt;/p>
+&lt;h4 id="v22-删除安全的-set">v2.2 删除安全的 SET&lt;/h4>
+&lt;p>使用 &lt;code>LUA&lt;/code> 脚本, 使其原子执行得到保证, (&lt;code>EVAL&lt;/code>)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-lua" data-lang="lua">&lt;span class="line">&lt;span class="cl">&lt;span class="kr">if&lt;/span> &lt;span class="n">redis.call&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;get&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">KEYS&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">ARGV&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="kr">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">return&lt;/span> &lt;span class="n">redis.call&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;del&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">KEYS&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">return&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="v30-带-redisson-的分布式锁">v3.0 带 &lt;code>Redisson&lt;/code> 的分布式锁&lt;/h4>
+&lt;p>&lt;strong>目的&lt;/strong>: 解决锁被提前释放的问题&lt;/p>
+&lt;p>&lt;strong>原理&lt;/strong>: 利用锁的可重入特性, 让获得锁的线程开启一个定时器的守护进程, 每 &lt;code>expireTime/3&lt;/code> 执行一次, 检查该线程的锁是否存在, 存在则重新设置为 &lt;code>expireTime&lt;/code> 续命, 防止锁由于过期提前释放&lt;/p>
+&lt;h3 id="多机分布式锁-redlock">多机分布式锁 &lt;code>Redlock&lt;/code>&lt;/h3>
+&lt;h2 id="ref">ref&lt;/h2>
+&lt;ul>
+&lt;li>《Redis 设计与实现》&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.infoq.cn/article/dvaaj71f4fbqsxmgvdce" target="_blank" rel="noopener"
+>浅析 Redis 分布式锁解决方案&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>Network Summary</title><link>https://resyon.netlify.app/p/network-summary/</link><pubDate>Sun, 20 Feb 2022 13:01:00 +0800</pubDate><guid>https://resyon.netlify.app/p/network-summary/</guid><description>&lt;h1 id="计网">计网&lt;/h1>
+&lt;h2 id="tcp">TCP&lt;/h2>
+&lt;h3 id="说一下-tcp">说一下 &lt;code>TCP&lt;/code>&lt;/h3>
+&lt;p>&lt;code>TCP&lt;/code> 是位于运输层的协议，为应用层提供 &lt;strong>面向连接的&lt;/strong>，&lt;strong>可靠的&lt;/strong> &lt;strong>字节流&lt;/strong> 服务&lt;/p>
+&lt;p>面向连接：一定是「一对一」才能连接，不能像 UDP 协议 可以一个主机同时向多个主机发送消息，也就是一对多是无法做到的；&lt;/p>
+&lt;p>可靠的：无论的网络链路中出现了怎样的链路变化，TCP 都可以保证一个报文一定能够到达接收端；&lt;/p>
+&lt;p>字节流：消息是「没有边界」的，所以无论我们消息有多大都可以进行传输。并且消息是「有序的」，当「前一个」消息没有收到的时候，即使它先收到了后面的字节已经收到，那么也不能扔给应用层去处理，同时对「重复」的报文会自动丢弃。&lt;/p>
+&lt;h3 id="tcp-连接">&lt;code>TCP&lt;/code> 连接&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Connections:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">The reliability and flow control mechanisms described above require that TCPs initialize and maintain certain status information for each data stream.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">The combination of this information, including sockets, sequence numbers, and window sizes, is called a connection.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>简单来说就是，用于保证 &lt;strong>可靠性和流量控制维护的某些状态信息&lt;/strong>，这些信息的组合，包括Socket、序列号和窗口大小称为连接。&lt;/p>
+&lt;p>（源地址，源端口，目的地址，目的端口）4 元组可以唯一确定 1 个连接&lt;/p>
+&lt;h3 id="tcp-与-udp-的区别">&lt;code>TCP&lt;/code> 与 &lt;code>UDP&lt;/code> 的区别&lt;/h3>
+&lt;h4 id="连接">连接&lt;/h4>
+&lt;p>TCP 是面向连接的传输层协议，传输数据前先要建立连接。&lt;/p>
+&lt;p>UDP 是不需要连接，即刻传输数据。&lt;/p>
+&lt;h4 id="服务对象">服务对象&lt;/h4>
+&lt;p>TCP 是一对一的两点服务，即一条连接只有两个端点。&lt;/p>
+&lt;p>UDP 支持一对一、一对多、多对多的交互通信&lt;/p>
+&lt;h4 id="可靠性">可靠性&lt;/h4>
+&lt;p>TCP 是可靠交付数据的，数据可以无差错、不丢失、不重复、按需到达。&lt;/p>
+&lt;p>UDP 是尽最大努力交付，不保证可靠交付数据。&lt;/p>
+&lt;h4 id="拥塞控制流量控制">拥塞控制、流量控制&lt;/h4>
+&lt;p>TCP 有拥塞控制和流量控制机制，保证数据传输的安全性。&lt;/p>
+&lt;p>UDP 则没有，即使网络非常拥堵了，也不会影响 UDP 的发送速率。&lt;/p>
+&lt;h4 id="首部开销">首部开销&lt;/h4>
+&lt;p>TCP 首部长度较长，会有一定的开销，首部在没有使用「选项」字段时是 20 个字节，如果使用了「选项」字段则会变长的。&lt;/p>
+&lt;p>UDP 首部只有 8 个字节，并且是固定不变的，开销较小。&lt;/p>
+&lt;h4 id="分段">分段&lt;/h4>
+&lt;p>TCP 对应用层传来的数据包进行分段，UDP 则不做处理&lt;/p>
+&lt;blockquote>
+&lt;p>为什么 IP 有分片，TCP 还要进行分段
+&lt;img src="https://resyon.netlify.app/img/8.png"
+loading="lazy"
+alt="图源: https://www.imperva.com/blog/mtu-mss-explained/"
+>&lt;/p>
+&lt;/blockquote>
+&lt;p>为了保证 &lt;strong>传输效能&lt;/strong>，也方便重传&lt;/p>
+&lt;p>为了达到最佳的传输效能 TCP 协议在建立连接的时候通常要协商双方的 MSS 值，使 &lt;code>MSS + IP首部 &amp;lt;= MTU&lt;/code>，确保单个 TCP 报文段无需再经过 IP 层进一步分片。这样，如果一个 TCP 分片丢失，进行重发时也是以 MSS 为单位，而不用重传所有的分片，大大增加了重传的效率&lt;/p>
+&lt;h3 id="tcp-如何保证-可靠-传输">&lt;code>TCP&lt;/code> 如何保证 &lt;strong>可靠&lt;/strong> 传输&lt;/h3>
+&lt;ol>
+&lt;li>确认应答，自适应的超时及重传策略确保不丢包&lt;/li>
+&lt;li>首部校验和确保不接收差错报文&lt;/li>
+&lt;li>序列号使得 &lt;code>TCP&lt;/code> 能够通过重排序确保报文段不失序，不冗余&lt;/li>
+&lt;li>流量控制确保缓冲区不溢出&lt;/li>
+&lt;/ol>
+&lt;h3 id="tcp-3-次握手">&lt;code>TCP&lt;/code> 3 次握手&lt;/h3>
+&lt;h4 id="过程">过程&lt;/h4>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="http://blog-img.coolsen./img/image-20210520161056918.png" target="_blank" rel="noopener"
+>原图 url&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;img src="https://resyon.netlify.app/img/4.png"
+loading="lazy"
+alt="tcp3 次握手"
+>&lt;/p>
+&lt;ol>
+&lt;li>客户端将 &lt;code>SYN&lt;/code> 置为 1 ，随机产生一个 &lt;code>seq=i&lt;/code>，并将数据包发送给服务器，客户端进入 &lt;code>SYN_SENT&lt;/code> 状态，等待服务器确认。&lt;/li>
+&lt;li>服务器收到数据包后，由 &lt;code>SYN&lt;/code> 为 1 知道客户端请求建立连接，将 &lt;code>SYN&lt;/code> 和 &lt;code>ACK&lt;/code> 置为1，&lt;code>ack=i+1&lt;/code>，随机产生 &lt;code>seq=j&lt;/code>，并将数据包发送给客户端以确认连接请求。服务器进入 &lt;code>SYN_RCVD&lt;/code> 状态。&lt;/li>
+&lt;li>客户端收到确认后，检查 &lt;code>ack&lt;/code> 是否为 &lt;code>i+1&lt;/code>，&lt;code>ACK&lt;/code> 是否为 1，如果正确将 &lt;code>ACK=1&lt;/code>，&lt;code>ack&lt;/code> 置为 &lt;code>j+1&lt;/code>，并将数据包发送给服务器，服务器检查 &lt;code>ack&lt;/code> 是否为 &lt;code>j+1&lt;/code>，&lt;code>ACK=1&lt;/code>，如果正确则连接建立成功，双方进入 &lt;code>ESTABLISHED&lt;/code> 状态，完成三次握手。&lt;/li>
+&lt;/ol>
+&lt;h4 id="原因为什么要-3-次握手">原因（为什么要 3 次握手）&lt;/h4>
+&lt;h5 id="为什么不是两次">为什么不是两次？&lt;/h5>
+&lt;ol>
+&lt;li>
+&lt;p>首要原因是为了防止旧的重复连接初始化造成混乱。&lt;/p>
+&lt;p>&lt;img src="https://resyon.netlify.app/img/5.jpg"
+loading="lazy"
+alt="过期 SYN 干扰"
+>&lt;/p>
+&lt;p>在双方两次握手即可建立连接的情况下，假设客户端发送 A 报文段请求建立连接，由于网络原因造成 A 暂时无法到达服务器，服务器接收不到请求报文段就不会返回确认报文段。&lt;/p>
+&lt;p>客户端在长时间得不到应答的情况下重新发送请求报文段 B，这次 B 顺利到达服务器，服务器随即返回确认报文并进入 ESTABLISHED 状态，客户端在收到 确认报文后也进入 ESTABLISHED 状态，双方建立连接并传输数据，之后正常断开连接。&lt;/p>
+&lt;p>此时姗姗来迟的 A 报文段才到达服务器，服务器随即返回确认报文并进入 ESTABLISHED 状态，但是已经进入 CLOSED 状态的客户端无法再接受确认报文段，更无法进入 ESTABLISHED 状态，这将导致服务器长时间单方面等待，造成资源浪费。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>三次握手才能让双方均确认自己和对方的发送和接收能力都正常（有能力建立全双工连接）。2 次握手，如果客户端的 SYN 阻塞了，重复发送多次 SYN 报文，那么服务器在收到请求后就会建立多个冗余的无效链接，造成不必要的资源浪费。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://resyon.netlify.app/img/6.jpg"
+loading="lazy"
+alt="2 次握手, SYN 阻塞造成的资源浪费"
+>&lt;/p>
+&lt;p>第一次握手：客户端只是发送处请求报文段，什么都无法确认，而服务器可以确认自己的接收能力和对方的发送能力正常；&lt;/p>
+&lt;p>第二次握手：客户端可以确认自己发送能力和接收能力正常，对方发送能力和接收能力正常；&lt;/p>
+&lt;p>第三次握手：服务器可以确认自己发送能力和接收能力正常，对方发送能力和接收能力正常；&lt;/p>
+&lt;p>可见三次握手才能让双方都确认自己和对方的发送和接收能力全部正常，这样就可以愉快地进行通信了。&lt;/p>
+&lt;ol start="3">
+&lt;li>
+&lt;p>告知对方自己的初始序号值，并确认收到对方的初始序号值。（同步 &lt;code>seq&lt;/code>）&lt;/p>
+&lt;p>TCP 实现了可靠的数据传输，原因之一就是 TCP 报文段中维护了序号字段和确认序号字段，通过这两个字段双方都可以知道在自己发出的数据中，哪些是已经被对方确认接收的。这两个字段的值会在初始序号值得基础递增，如果是两次握手，只有发起方的初始序号可以得到确认，而另一方的初始序号则得不到确认。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h5 id="为什么不是-4-次">为什么不是 4 次&lt;/h5>
+&lt;p>&lt;img src="https://resyon.netlify.app/img/7.jpg"
+loading="lazy"
+alt="4 次握手"
+>&lt;/p>
+&lt;p>没有必要。因为三次握手已经可以确认双方的发送接收能力正常，双方都知道彼此已经准备好，而且也可以完成对双方初始序号值得确认，也就无需再第四次握手了。&lt;/p>
+&lt;h3 id="半连接队列sync-全连接队列backlog-积压值-backlog">半连接队列(&lt;code>sync&lt;/code>) 全连接队列(&lt;code>backlog&lt;/code>) 积压值 (&lt;code>backlog&lt;/code>)&lt;/h3>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://www.bilibili.com/video/BV1AK4y177WA" target="_blank" rel="noopener"
+>https://www.bilibili.com/video/BV1AK4y177WA&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;h4 id="作用">作用&lt;/h4>
+&lt;p>&lt;img src="https://resyon.netlify.app/img/3.png"
+loading="lazy"
+alt="连接队列"
+>&lt;/p>
+&lt;p>&lt;code>TCP&lt;/code> 完成 3 次握手建立连接后，放入连接队列，这个队列的长度称为 &lt;code>backlog&lt;/code>，取值范围 [0, 5]，通常为 5&lt;/p>
+&lt;p>积压值说明的是 TCP 监听的端点已被 TCP 接受而等待应用层接受的最大连接数，对系统所允许的最大连接数或者并发服务器所能并发处理的客户数无影响&lt;/p>
+&lt;h4 id="accept-queue满了之后的协议栈处理">accept queue满了之后的协议栈处理&lt;/h4>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">cat /proc/sys/net/ipv4/tcp_abort_on_overflow
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>有效值:0或者1
+0: 当 &lt;code>TCP&lt;/code> 建立连接的 3 路握手完成后，将连接置入 &lt;code>ESTABLISHED&lt;/code> 状态并交付给应用程序的 &lt;code>backlog&lt;/code> 队列时，会检查 &lt;code>backlog&lt;/code> 队列是否已满。若已满，通常行为是将连接还原至 &lt;code>SYN_ACK&lt;/code> 状态，以造成 3 路握手最后的 &lt;code>ACK&lt;/code> 包意外丢失假象――这样在客户端等待超时后可重发 &lt;code>AcK&lt;/code> —―以再次尝试进入 &lt;code>ESTABLISHED&lt;/code> 状态――作为一种修复/重试机制。&lt;/p>
+&lt;p>1: 如果 &lt;code>tcp _abort_on_overflow&lt;/code> 为 1，则在检查到 &lt;code>backlog&lt;/code> 队列已满时，直接发 &lt;code>RST&lt;/code> 包给客户端终止此连接&amp;ndash;此时客户端程序会收到 &lt;code>104 Connection reset by pee&lt;/code> r错误&lt;/p>
+&lt;h3 id="syn-攻击">&lt;code>SYN&lt;/code> 攻击&lt;/h3>
+&lt;h4 id="原理">原理&lt;/h4>
+&lt;p>攻击者短时间内伪造不同 &lt;code>IP&lt;/code> 的 &lt;code>SYN&lt;/code> 报文，服务端回之 &lt;code>ACK + SYN&lt;/code> 并进入 &lt;code>SYN_RCVD&lt;/code> 状态，由于没有收到 &lt;code>ACK&lt;/code> 的确认连接，长期停滞在 &lt;code>SYN_RCVD&lt;/code> 状态，最终占满半连接队列，使得服务器不能为正常用户服务&lt;/p>
+&lt;h4 id="避免">避免&lt;/h4>
+&lt;ol>
+&lt;li>通过修改内核参数，调整 &lt;strong>队列大小&lt;/strong> 和 &lt;strong>队列满时的行为&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="./os.md" >如何修改内核参数 ? &lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-conf" data-lang="conf">&lt;span class="line">&lt;span class="cl">&lt;span class="c"># 缓存网卡至内核数据包的队列大小
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nv">net.core.netdev_max_backlog&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># 半连接队列的大小，限制处于 `SYN_RCVD` 状态的连接数目
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nv">net.ipv4.tcp_max_syn_backlog&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># 对超出处理能力的 SYN 回复 RST
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nv">net.ipv4.tcp_abort_on_overflow&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="2">
+&lt;li>&lt;code>tcp_syncookies&lt;/code>&lt;/li>
+&lt;/ol>
+&lt;p>原理&lt;/p>
+&lt;p>&lt;img src="https://resyon.netlify.app/img/9.jpg"
+loading="lazy"
+alt="tcp_syn_cookies"
+>&lt;/p>
+&lt;p>半连接队列满后，不再插入后续的 &lt;code>SYN&lt;/code> 包，而在回应的 &lt;code>SYN + ACK&lt;/code> 包中夹带计算得到的 &lt;code>cookie&lt;/code>，后续若收到 &lt;code>ACK&lt;/code> 报文，则在检查合法性通过后将其直接加入 &lt;strong>全连接队列&lt;/strong>&lt;/p>
+&lt;p>打开方法&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-conf" data-lang="conf">&lt;span class="line">&lt;span class="cl">&lt;span class="nv">net.ipv4.tcp_syncookies&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nv">1&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="3">
+&lt;li>通过防火墙、路由器等过滤网关防护&lt;/li>
+&lt;/ol>
+&lt;h3 id="tcp-四次挥手">&lt;code>TCP&lt;/code> 四次挥手&lt;/h3>
+&lt;h4 id="过程-1">过程&lt;/h4>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://resyon.netlify.app/img/10.jpg" >原图：小林coding&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>客户端将 &lt;code>FIN&lt;/code> 置为1，发送给服务器，用来关闭客户端到服务器的数据传送，客户端进入 &lt;code>FIN_WAIT_1&lt;/code> 状态。&lt;/li>
+&lt;li>服务器收到 &lt;code>FIN&lt;/code> 之后，回复 &lt;code>ACK&lt;/code>，确认序号为收到序号+1，服务器进入 &lt;code>CLOSE_WAIT&lt;/code> 状态，此时 &lt;code>TCP&lt;/code> 连接处于&lt;strong>半关闭状态&lt;/strong>，即客户端没有要发送的数据了，但是仍然可以接受服务器端的数据。&lt;/li>
+&lt;li>当服务器也没有要发送的数据时，向客户端发送一个 &lt;code>FIN&lt;/code>，用来关闭服务器到客户端的数据传送，服务器进入 &lt;code>LAST_ACK&lt;/code> 状态。&lt;/li>
+&lt;li>客户端收到 &lt;code>FIN&lt;/code> 之后，进入 &lt;code>TIME_WAIT&lt;/code> 状态，回复 &lt;code>ACK&lt;/code>，确认序号为收到序号+1，服务器进入 &lt;code>CLOSED&lt;/code> 状态，完成四次挥手&lt;/li>
+&lt;/ol>
+&lt;h4 id="为什么-time_wait-要等-2msl">为什么 &lt;code>TIME_WAIT&lt;/code> 要等 2MSL&lt;/h4>
+&lt;blockquote>
+&lt;p>Linux 默认 MSL=30s
+MSL：报文最大生存时间&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>确保 &lt;code>FIN&lt;/code> 发起方的最后一个 &lt;code>ACK&lt;/code> 被接收，否则接收方超时，重发 &lt;code>FIN&lt;/code>&lt;/li>
+&lt;li>确保本次连接的报文段在网络中消失，以免干扰下一次连接. &lt;code>2MSL&lt;/code> 时间的 &lt;code>TIME_WAIT&lt;/code> 状态能够确保网络上两个传输方向上尚未被接收到的、迟到的 &lt;code>TCP&lt;/code> 报文段都已经消失（被中转路由丢弃）。&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://resyon.netlify.app/img/11.jpg"
+loading="lazy"
+alt="旧的延迟的报文干扰"
+>&lt;/p>
+&lt;h3 id="tcp-发送-rst-的情形">&lt;code>TCP&lt;/code> 发送 &lt;code>RST&lt;/code> 的情形&lt;/h3>
+&lt;blockquote>
+&lt;p>&lt;code>RST&lt;/code> 表示复位，用来异常的关闭连接，在 &lt;code>TCP&lt;/code> 的设计中它是不可或缺的。发送 &lt;code>RST&lt;/code> 包关闭连接时，不必等缓冲区的包都发出去，&lt;strong>直接就丢弃&lt;/strong> 缓存区的包发送 &lt;code>RST&lt;/code>包。而接收端收到RST包后，也 &lt;strong>不必&lt;/strong> 发送 &lt;code>ACK&lt;/code> 包来确认。&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>在一个已关闭的socket上收到数据&lt;/li>
+&lt;li>异常终止/异常关闭（如使用 &lt;code>SO_LINGER&lt;/code> 选项，故意在关闭时发 &lt;code>RST&lt;/code> 而非 &lt;code>FIN&lt;/code>，以跳过 &lt;code>TIME_WAIT&lt;/code>&lt;/li>
+&lt;li>拒绝连接，如限定本地 IP 地址的服务端接收到非本地的 &lt;code>SYN&lt;/code> 时&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>一方已经关闭或异常终止而另一方仍未察觉的 &lt;code>TCP&lt;/code> 连接，称为 &lt;strong>半打开连接&lt;/strong>, 常见原因：主机异常；异常终止的一方重启后，若收到 &lt;code>TCP&lt;/code> 报文，将回复 &lt;code>RST&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;ol start="4">
+&lt;li>检测，处理 &lt;strong>半打开连接&lt;/strong> ：A关闭了连接，B却没有收到结束报文（如网络故障），此时B还维持着原来的连接。A重启之后收到了B发送的报文，则回应RST复位报文。&lt;/li>
+&lt;li>端口未打开：服务器程序端口未打开而客户端来连接。服务器程序 core dump 之后重启之前连续出现 &lt;code>RST&lt;/code> 的情况。&lt;/li>
+&lt;li>端口不存在：若端口不存在，则直接返回 &lt;code>RST&lt;/code>，同时 &lt;code>RST&lt;/code> 报文接收通告窗口大小为0.&lt;/li>
+&lt;li>请求超时：建立连接过程中，一端认为接收超时，即使受到了想要的数据，也会发送 &lt;code>RST&lt;/code> 拒绝进一步发送数据。&lt;/li>
+&lt;/ol>
+&lt;h3 id="tcp-连接同时打开关闭">&lt;code>TCP&lt;/code> 连接同时打开/关闭&lt;/h3>
+&lt;h4 id="同时打开">同时打开&lt;/h4>
+&lt;p>&lt;code>TCP&lt;/code> 设计上会通过4次握手 &lt;strong>成功&lt;/strong> 建立连接，但实现上不一定支持&lt;/p>
+&lt;p>&lt;img src="https://resyon.netlify.app/img/0.png"
+loading="lazy"
+alt="状态转换"
+>&lt;/p>
+&lt;h4 id="同时关闭">同时关闭&lt;/h4>
+&lt;p>4次挥手关闭，最后都进入 &lt;code>TIME_WAIT&lt;/code>&lt;/p>
+&lt;p>&lt;img src="https://resyon.netlify.app/img/1.png"
+loading="lazy"
+alt="状态转换"
+>&lt;/p>
+&lt;h3 id="tcp-各阶段状态可能原因及解决">&lt;code>TCP&lt;/code> 各阶段状态可能原因及解决&lt;/h3>
+&lt;h4 id="timewait">TIMEWAIT&lt;/h4>
+&lt;blockquote>
+&lt;p>大量连接处于 &lt;code>TIME_WAIT&lt;/code> 原因&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;code>TIME_WAIT&lt;/code> 状态说明是主动断开的连接，原因可能是应用所使用的反向代理服务器 (如 nginx) 未设置 &lt;code>connection: keep-alive&lt;/code>&lt;/p>
+&lt;blockquote>
+&lt;p>危害&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>内存占用&lt;/li>
+&lt;li>端口占用，一个 &lt;code>TCP&lt;/code> 连接至少消耗 1 个本地端口，用尽则无法创建新连接&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>解决&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>调整 &lt;code>net.ipv4.ip_local_port_range&lt;/code> 增大可用的端口数量&lt;/li>
+&lt;li>复用处于 &lt;code>TIME_WAIT&lt;/code> 的 &lt;code>socket&lt;/code>&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-conf" data-lang="conf">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># turn on reuse
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nv">net.ipv4.tcp_tw_reuse&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nv">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># make sure tcp timestamps on, default = 1
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># 若客户端和服务端主机时间不同步时，客服端发送的消息会直接被拒绝
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nv">net.ipv4.tcp_timestamps&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nv">1&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="3">
+&lt;li>重置 &lt;code>TIME_WAIT&lt;/code> 连接&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-conf" data-lang="conf">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># 默认为 18000，超过该值后，系统会重置所有的 TIME_WAIT
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nv">net.ipv4.tcp_max_tw_buckets&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nv">18000&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="4">
+&lt;li>异常关闭连接，跳过 &lt;code>TIME_WAIT&lt;/code>&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">linger&lt;/span> &lt;span class="n">so_linger&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">so_linger&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">l_onoff&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">so_linger&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">l_linger&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// SO_LINGER 使得关闭时发送 RST，而非 FIN
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nf">setsockopt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SOL_SOCKET&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">SO_LINGER&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">so_linger&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">so_linger&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="close_wait">CLOSE_WAIT&lt;/h4>
+&lt;blockquote>
+&lt;p>原因&lt;/p>
+&lt;/blockquote>
+&lt;p>说明应用程序没有合适的关闭 &lt;code>socket&lt;/code>，既可能是程序写的有问题没有关闭，或者因为 IO，锁陷入睡眠状态，也可能是 CPU 过载，得不到调度&lt;/p>
+&lt;p>通常来说，一个 &lt;code>CLOSE_WAIT&lt;/code> 会维持至少2个小时的时间（系统默认超时时间的是7200秒，也就是2小时）。如果服务端程序因某个原因导致系统造成一堆 &lt;code>CLOSE_WAIT&lt;/code> 消耗资源，那么通常是等不到释放那一刻，系统就已崩溃。&lt;/p>
+&lt;blockquote>
+&lt;p>解决&lt;/p>
+&lt;/blockquote>
+&lt;p>解决这个问题的方法还可以通过修改 &lt;code>TCP/IP&lt;/code> 的参数来缩短这个时间，于是修改tcp_keepalive_*系列参数。
+给每一个 &lt;code>socket&lt;/code> 设置一个时间戳 &lt;code>last_update&lt;/code>，每接收或者是发送成功数据，就用当前时间更新这个时间戳。定期检查所有的时间戳，如果时间戳与当前时间差值超过一定的阈值，就关闭这个 &lt;code>socket&lt;/code>。&lt;/p>
+&lt;h4 id="其他">其他&lt;/h4>
+&lt;p>可以用 &lt;code>netstat -nat&lt;/code> 命令查看tcp各个状态的数量，哪个端口被占用、套接字的状态、接收缓冲区和发送缓冲区中的数据个数、IP、还有程序名字。&lt;/p>
+&lt;p>NOTE：&lt;/p>
+&lt;p>（1）主动端出现大量的 &lt;code>FIN_WAIT_1&lt;/code> 时需要注意网络是否畅通、出现大量的 &lt;code>FIN_WAIT_2&lt;/code> 需要仔细检查程序为何迟迟收不到对端的 &lt;code>FIN&lt;/code>（可能是主动方或者被动方的 bug ）、出现大量的 TIME_WAIT 需要注意系统的并发量/ socket 句柄资源/内存使用/端口号资源等。&lt;/p>
+&lt;p>（2）被动端出现大量的 CLOSE_WAIT 需要仔细检查为何自己迟迟不愿调用 close 关闭连接（可能是bug，socket打开用完没有关闭）&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>LISTENING：侦听来自远方的 TCP 端口的连接请求. 首先服务端需要打开一个 socket 进行监听，状态为 &lt;code>LISTEN&lt;/code>。TCP 状态变化就是某个端口的状态变化，提供一个服务就打开一个端口。关闭不必要的端口是保证安全的一个非常重要的方面（ DDoS 攻击）。处于侦听 LISTENING 状态时，该端口是开放的，等待连接，但还没有被连接。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>SYN_SENT（客户端）：客户端通过应用程序 &lt;code>connect()&lt;/code> 连接时，客户端发送一个SYN以请求建立一个连接，之后状态置为SYN_SENT 。正常情况下 SYN_SENT 状态非常短暂。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>如果发现有很多 SYN_SENT 出现，那一般有这么几种情况：&lt;/p>
+&lt;p>一是你要访问的网站不存在或线路不好，&lt;/p>
+&lt;p>二是用扫描软件扫描一个网段的机器，也会出现很多 SYN_SENT，&lt;/p>
+&lt;p>三是可能中了病毒了，例如中了&amp;quot;冲击波&amp;quot;，病毒发作时会扫描其它机器（扫描过程发出了同步请求），这样会有很多 SYN_SENT出现。&lt;/p>
+&lt;p>3，SYN_RECEIVED（服务端）：当服务器收到客户端发送的同步信号时，将标志位 ACK 和 SYN 置 1 发送给客户端，此时服务器端处 SYN_RCVD 状态，如果连接成功了就变为 ESTABLISHED，正常情况下 SYN_RCVD 状态非常短暂。&lt;/p>
+&lt;p>如果发现有很多 SYN_RCVD 状态，那你的机器有可能被 &lt;code>SYN Flood&lt;/code> 的 DoS (拒绝服务攻击)攻击了。这种情况下服务器端一般会重试（再次发送 SYN+ACK 给客户端）并等待一段时间后丢弃这个未完成的连接，这段时间的长度我们称为 SYN Timeout。&lt;/p>
+&lt;ol start="4">
+&lt;li>ESTABLISHED：代表一个打开的连接。&lt;/li>
+&lt;/ol>
+&lt;p>服务器出现很多 ESTABLISHED 状态：当客户端未主动 close 的时候就断开连接（没有正常进行四次挥手断开连接），若客户端断开的时候发送了 FIN 包，则服务端将会处于 CLOSE_WAIT 状态，若断开的时候未发送 FIN 包，则服务端处还是显示 ESTABLISHED 状态。当客户端重新连接服务器的时候，服务端肯定是 ESTABLISHED 状态，如果客户端重复上演这种情况，那么服务端将会出现大量的假的 ESTABLISHED 连接和 CLOSE_WAIT 连接。最终结果就是新的其他客户端无法连接上来，但是利用 netstat 还是能看到一条连接已经建立。&lt;/p>
+&lt;ol start="5">
+&lt;li>FIN-WAIT-1：主动关闭(active close)端应用程序调用close()，于是其 TCP 发出 FIN 请求主动关闭连接，之后进入 FIN_WAIT_1 状态。等待远程 TCP 的连接中断请求，或先前的连接中断请求的确认。&lt;/li>
+&lt;/ol>
+&lt;p>如果服务器（作为主动关闭方？） 出现 shutdown 再重启，使用&lt;code>netstat -nat&lt;/code> 查看，就会看到很多 &lt;code>FIN-WAIT-1&lt;/code> 的状态。就是因为服务器当前有很多客户端连接，直接关闭服务器后，无法接收到客户端的 ACK。&lt;/p>
+&lt;ol start="6">
+&lt;li>CLOSE-WAIT：被动关闭 (passive close) 端 TCP 接到 FIN 后，就发出 ACK 以回应 FIN 请求(它的接收也作为文件结束符传递给上层应用程序),并进入 CLOSE_WAIT。&lt;/li>
+&lt;/ol>
+&lt;p>大量 closewait 的原因：代码层面上未对连接进行关闭，比如关闭代码未写在 finally 块关闭，如果程序中发生异常就会跳过关闭代码；程序响应过慢，比如双方进行通讯，当客户端请求服务端迟迟得不到响应，就断开连接，重新发起请求，导致服务端一直忙于业务处理，没空去关闭连接。这种情况也会导致这个问题；&lt;/p>
+&lt;ol start="7">
+&lt;li>
+&lt;p>FIN-WAIT-2：主动关闭端接到 ACK 后，就进入了FIN-WAIT-2。这就是著名的 &lt;strong>半关闭状态&lt;/strong> 了，这是在关闭连接时，客户端和服务器两次握手之后的状态。在这个状态下，应用程序还有接受数据的能力，但是已经无法发送数据，但是也有一种可能是，客户端一直处于 FIN_WAIT_2 状态，而服务器则一直处于 CLOSE_WAIT 状态，而直到应用层来决定关闭这个状态。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>LAST-ACK：被动关闭端一段时间后，接收到文件结束符的应用程序将调用 close() 关闭连接。这导致它的 TCP 也发送一个 FIN, 等待对方的 ACK. 就进入了 LAST-ACK。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>使用并发压力测试的时候，突然断开压力测试客户端，服务器会看到很多 LAST-ACK。&lt;/p>
+&lt;p>9，TIME-WAIT：在主动关闭端接收到 FIN 后，TCP 就发送 ACK包，并进入 TIME-WAIT 状态。等待足够的时间以确保远程TCP接收到连接中断请求的确认。&lt;/p>
+&lt;p>这个状态是防止最后一次握手的数据报没有传送到对方那里而准备的（注意这不是四次握手，这是第四次握手的保险状态）。这个状态在很大程度上保证了双方都可以正常结束，但是，问题也来了。&lt;/p>
+&lt;p>由于插口的 2MSL 状态（插口是 IP 和端口对的意思，socket），使得应用程序在 2MSL 时间内是无法再次使用同一个插口的，对于客户程序还好一些，但是对于服务程序，例如 httpd，它总是要使用同一个端口来进行服务，而在 2MSL 时间内，启动 httpd 就会出现错误（插口被使用）。为了避免这个错误，服务器给出了一个平静时间的概念，这是说在2MSL时间内，虽然可以重新启动服务器，但是这个服务器还是要平静的等待2MSL时间的过去才能进行下一次连接。&lt;/p>
+&lt;ol start="10">
+&lt;li>
+&lt;p>CLOSED：没有任何连接状态&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>CLOSING 状态：一般较少出现，这种是客户端和服务端同时发起了 FIN 主动关闭。如客户端发送 FIN 主动关闭，但是没有收到服务端发来的 ACK 确认，而是先收到了服务端发来的 FIN 关闭连接，所以必须是同时。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>在进入 CLOSING 状态后，只要收到了对方对自己发送的 FIN 的 ACK，收到 FIN 的 ACK 确认就进入 TIME_WAIT 状态，因此，如果 RTT(Round Trip Time TCP包的往返延时)处在一个可接受的范围内，发出的 FIN 会很快被 ACK 从而进入到 TIME_WAIT 状态，CLOSING 状态持续的时间就特别短，因此很难看到这种状态&lt;/p>
+&lt;h3 id="nagle-算法">&lt;code>Nagle&lt;/code> 算法&lt;/h3>
+&lt;p>该算法要求一个 &lt;code>TCP&lt;/code> 连接上最多只能有一个未被确认分未完成的小分组，在该分组的确认之前不能发送其他的小分组&lt;/p>
+&lt;h4 id="作用-1">作用&lt;/h4>
+&lt;p>避免小分组 (&lt;code>tinygram&lt;/code>) 在较慢的广域网上增加拥塞出现的可能，该算法的优越性在于自适应，通过确认的回复速率控制报文的传播速率&lt;/p>
+&lt;h4 id="弊端">弊端&lt;/h4>
+&lt;blockquote>
+&lt;p>即便关闭 &lt;code>Nagle&lt;/code> 算法，&lt;code>ACK&lt;/code> 也会延迟发送（累积确认），默认为 200ms
+更大延迟发送的 TCP 报文进一步影响实时性&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="滑动窗口">滑动窗口&lt;/h3>
+&lt;p>&lt;img src="https://resyon.netlify.app/img/2.png"
+loading="lazy"
+alt="滑动窗口"
+>&lt;/p>
+&lt;p>注意：窗口缩小时，右边沿并不（规定不能）向左移动&lt;/p>
+&lt;h3 id="拥塞窗口">拥塞窗口&lt;/h3>
+&lt;p>为支持 &lt;strong>慢启动&lt;/strong> 算法，发送方的 &lt;code>TCP&lt;/code> 增加了另一个窗口，即 &lt;strong>拥塞窗口&lt;/strong>&lt;/p>
+&lt;h3 id="tcp-tahoe-tcp-reno">&lt;code>TCP Tahoe&lt;/code> &lt;code>TCP Reno&lt;/code>&lt;/h3>
+&lt;p>&lt;strong>快速重传&lt;/strong> 算法最早出现的 &lt;code>4.3BSD Tahoe&lt;/code> 版本，&lt;code>3 Dup ACK&lt;/code> 后错误的使用慢启动；&lt;code>4.3BSD Reno&lt;/code> 出现了 &lt;strong>快速恢复&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>快速恢复
+ssthresh = cwnd / 2
+cwnd = ssthresh + 3 * MSS&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="tcp-坚持定时器">&lt;code>TCP&lt;/code> 坚持定时器&lt;/h3>
+&lt;p>窗口为 0 时，发送方受到抑制，若此时接收方的通告窗口不为 0 的 &lt;code>ACK&lt;/code> 恰好丢失，将发生死锁，发送方使用 &lt;strong>坚持定时器&lt;/strong> 来周期性地向接收方查询窗口是否增大，这种查询窗口的报文称为 &lt;strong>窗口探查&lt;/strong>&lt;/p>
+&lt;h3 id="保活机制">保活机制&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-conf" data-lang="conf">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># 7200s 无活动，保活机制启动
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nv">net.ipv4.tcp_keepalive_time&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nv">7200&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># 每次检测间隔 75s
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nv">net.ipv4.tcp_keepalive_intvl&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nv">75&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># 9次无响应则视为死亡
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nv">net.ipv4.tcp_keepalive_probes&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nv">9&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="http">HTTP&lt;/h2>
+&lt;h3 id="范围请求">范围请求&lt;/h3>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://juejin.cn/post/6844903642034765837" target="_blank" rel="noopener"
+>ref&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>&lt;code>HTTP&lt;/code> 范围请求，需要 &lt;code>HTTP/1.1&lt;/code> 及之上支持，如果双端某一段低于此版本，则认为不支持。&lt;/li>
+&lt;li>通过响应头中的 &lt;code>Accept-Ranges&lt;/code>（只有可选参数 &lt;code>bytes&lt;/code>）来确定是否支持范围请求。&lt;/li>
+&lt;li>通过在请求头中添加 &lt;code>Range&lt;/code> 这个请求头，来指定请求的内容实体的字节范围。&lt;/li>
+&lt;li>在响应头中，状态码为 &lt;code>206 Partial Content; 416 Range Not Satisfiable&lt;/code>, 通过 &lt;code>Content-Range&lt;/code> 来标识当前返回的内容实体范围，并使用 &lt;code>Content-Length&lt;/code> 来标识当前返回的内容实体范围长度。&lt;/li>
+&lt;li>在请求过程中，可以通过 &lt;code>If-Range&lt;/code> 来区分资源文件是否变动，它的值来自 &lt;code>ETag&lt;/code> 或者 &lt;code>Last-Modifled&lt;/code>。如果资源文件有改动，会重新走下载流程。&lt;/li>
+&lt;/ol>
+&lt;p>&lt;img src="https://resyon.netlify.app/img/13.awebp"
+loading="lazy"
+alt="img"
+>&lt;/p>
+&lt;h3 id="cookie-session-的区别">&lt;code>cookie&lt;/code>, &lt;code>session&lt;/code> 的区别&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>cookie&lt;/code> 实际上是一小段的文本信息。浏览器发送请求到服务器，如果服务器需要记录该用户的状态（比如：用户访问网页的次数，登录状态等），就使用 &lt;code>response&lt;/code> 向客户端浏览器颁发一个 &lt;code>cookie&lt;/code>。客户端浏览器会把 &lt;code>cookie&lt;/code> 保存起来。当浏览器再次请求该网站时，浏览器就会把请求地址和 &lt;code>cookie&lt;/code> 一同给服务器。服务器检查该 &lt;code>cookie&lt;/code>，从而判断用户的状态。服务器还可以根据需要修改 &lt;code>cookie&lt;/code> 的内容。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>session&lt;/code> 也是类似的记录用户状态的机制。不同的是&lt;/p>
+&lt;ol>
+&lt;li>&lt;code>cookie&lt;/code> 保存在 &lt;strong>客户端&lt;/strong> 浏览器中，而 &lt;code>session&lt;/code> 保存在 &lt;strong>服务器&lt;/strong> 上。&lt;/li>
+&lt;li>&lt;code>session&lt;/code> 比 &lt;code>cookie&lt;/code> &lt;strong>安全&lt;/strong>，别人可以分析存放在本地的 &lt;code>cookie&lt;/code> 并进行 &lt;code>cookie&lt;/code> 欺骗。&lt;/li>
+&lt;li>&lt;code>cookie&lt;/code> 能保存的 &lt;strong>数据量&lt;/strong> 比 &lt;code>session&lt;/code> 小，且 &lt;strong>只能保存字符串&lt;/strong>；&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="session-实现">session 实现&lt;/h4>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://blog.csdn.net/hongweigg/article/details/38115675" target="_blank" rel="noopener"
+>ref&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>session 是保存在服务端的会话信息，使用 &lt;code>SessionID&lt;/code> 标识&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>&lt;code>cookie&lt;/code> 可用，直接使用会话 &lt;code>cookie&lt;/code> 暂存 &lt;code>SessionID&lt;/code>&lt;/li>
+&lt;li>&lt;code>cookie&lt;/code> 不可用，使用 &lt;code>url&lt;/code> 重写将 &lt;code>SessionID&lt;/code> 告知服务端&lt;/li>
+&lt;/ol>
+&lt;h2 id="ref">&lt;code>ref&lt;/code>&lt;/h2>
+&lt;ul>
+&lt;li>《 TCP/IP 详解（卷一）》&lt;/li>
+&lt;li>&lt;a class="link" href="https://mp.weixin.qq.com/s/tH8RFmjrveOmgLvk9hmrkw" target="_blank" rel="noopener"
+>https://mp.weixin.qq.com/s/tH8RFmjrveOmgLvk9hmrkw&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/cosen1024/Java-Interview/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%8A.md" target="_blank" rel="noopener"
+>https://github.com/cosen1024/Java-Interview/blob/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%8A.md&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://blog.csdn.net/ewq21qwe/article/details/106578463" target="_blank" rel="noopener"
+>https://blog.csdn.net/ewq21qwe/article/details/106578463&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://segmentfault.com/a/1190000040786792?utm_source=sf-similar-article" target="_blank" rel="noopener"
+>https://segmentfault.com/a/1190000040786792?utm_source=sf-similar-article&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.nowcoder.com/questionTerminal/5a2d287965824d3ca93921bf89f8654c" target="_blank" rel="noopener"
+>https://www.nowcoder.com/questionTerminal/5a2d287965824d3ca93921bf89f8654c&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://blog.csdn.net/hongweigg/article/details/38115675" target="_blank" rel="noopener"
+>https://blog.csdn.net/hongweigg/article/details/38115675&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>OS Summary</title><link>https://resyon.netlify.app/p/os-summary/</link><pubDate>Sun, 20 Feb 2022 12:58:28 +0800</pubDate><guid>https://resyon.netlify.app/p/os-summary/</guid><description>&lt;h1 id="操作系统--linux">操作系统 / Linux&lt;/h1>
+&lt;h2 id="绪论">绪论&lt;/h2>
+&lt;h3 id="什么是操作系统">什么是操作系统&lt;/h3>
+&lt;p>操作系统是 &lt;strong>管理计算机软硬件资源的计算机程序&lt;/strong>，同时也是计算机系统的内核与基石&lt;/p>
+&lt;h3 id="操作系统的基本功能">操作系统的基本功能&lt;/h3>
+&lt;ol>
+&lt;li>内存管理&lt;/li>
+&lt;/ol>
+&lt;p>内存分配，地址映射，内存保护与共享，虚拟内存等&lt;/p>
+&lt;ol start="2">
+&lt;li>进程管理&lt;/li>
+&lt;/ol>
+&lt;p>进程控制，同步，通信；死锁处理，处理器掉调度&lt;/p>
+&lt;ol start="3">
+&lt;li>设备管理&lt;/li>
+&lt;/ol>
+&lt;p>完成用户的 IO 请求，方便用户使用设备，提高设备利用率。主要包括缓冲管理，设备分配，设备处理，虚拟设备等&lt;/p>
+&lt;ol start="4">
+&lt;li>文件管理&lt;/li>
+&lt;/ol>
+&lt;p>文件存储空间，目录的管理，文件读写管理和保护&lt;/p>
+&lt;h3 id="操作系统的特点">操作系统的特点&lt;/h3>
+&lt;ol>
+&lt;li>虚拟：一个物理实体映为多个逻辑对应物，分为空分复用（eg. 虚拟内存），时分复用（分时系统）&lt;/li>
+&lt;li>共享：资源可供内存中多个并发执行的进程共同使用&lt;/li>
+&lt;li>并发&lt;/li>
+&lt;li>异步：独立，不可预知的速度向前推进&lt;/li>
+&lt;/ol>
+&lt;h2 id="中断">中断&lt;/h2>
+&lt;h2 id="进程线程协程">进程，线程，协程&lt;/h2>
+&lt;h3 id="进程">进程&lt;/h3>
+&lt;p>&lt;strong>进程是资源分配的基本单位&lt;/strong>，用于管理资源（内存，文件，网络等资源）&lt;/p>
+&lt;h4 id="进程的特点">进程的特点&lt;/h4>
+&lt;p>PCB 描述进程的基本信息和运行状态，所谓的创建进程和撤销进程，都是指对 PCB 的操作&lt;/p>
+&lt;ol>
+&lt;li>动态性（相对程序）&lt;/li>
+&lt;li>并发&lt;/li>
+&lt;li>独立&lt;/li>
+&lt;li>异步&lt;/li>
+&lt;/ol>
+&lt;h4 id="特殊进程">特殊进程&lt;/h4>
+&lt;ol>
+&lt;li>
+&lt;p>守护进程：运行在后台的一种特殊进程，独立于控制终端并周期性地执行某些任务&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>僵尸进程：子进程退出，而父进程未调用 &lt;code>wait/waitpid&lt;/code> 获取子进程的状态信息，则该子进程的 &lt;strong>进程描述符&lt;/strong> 等信息仍保存在系统中，称为僵尸进程&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>孤儿进程：父进程退出，仍在运行的子进程称为孤儿进程，将由 &lt;code>init&lt;/code> 进程收养&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="线程">线程&lt;/h3>
+&lt;p>&lt;strong>线程是独立调度的基本单位&lt;/strong>，一个进程可以有多个线程，共享进程资源&lt;/p>
+&lt;h3 id="超线程">超线程&lt;/h3>
+&lt;p>超线程，也叫多线程，是指一种 &lt;strong>处理器特性&lt;/strong>，一个 &lt;code>CPU&lt;/code>可以保持两个线程状态，然后在纳秒级间隔内 &lt;strong>切换&lt;/strong>。
+实际上是并行。&lt;/p>
+&lt;h2 id="设备">设备&lt;/h2>
+&lt;h3 id="io-设备">I/O 设备&lt;/h3>
+&lt;p>I/O 设备包括 &lt;strong>设备控制器&lt;/strong> 和 &lt;strong>设备本身&lt;/strong>
+&lt;strong>设备控制器&lt;/strong> 的作用是为操作系统提供简单的接口&lt;/p>
+&lt;h2 id="杂项">杂项&lt;/h2>
+&lt;h3 id="如何修改内核参数">如何修改内核参数&lt;/h3>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://www.rootusers.com/use-procsys-and-sysctl-to-modify-and-set-kernel-runtime-parameters/" target="_blank" rel="noopener"
+>ref&lt;/a>&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;code>/proc/sys&lt;/code> 下的文件对应内核参数, ( &lt;code>/ -&amp;gt; .&lt;/code>)&lt;/p>
+&lt;ol>
+&lt;li>重启即恢复默认&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># eg. modify net.ipv4.icmp_echo_igore_all = 1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="m">1&lt;/span> &amp;gt; /proc/sys/net/ipv4/icmp_echo_ignore_all
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># or&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sysctl -w net.ipv4.icmp_echo_ignore_all&lt;span class="o">=&lt;/span>&lt;span class="m">1&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="2">
+&lt;li>持久化修改&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># eg. on RHE7&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># make sure a *.conf existed in /etc/sysctl.d/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># touch /etc/sysctl.d/icmp_ignore.conf&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;net.ipv4.icmp_echo_ignore_all = 1&amp;#34;&lt;/span> &amp;gt; /etc/sysctl.d/icmp-ignore.conf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="ref">ref&lt;/h2>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://blog.csdn.net/ewq21qwe/article/details/106578620?spm=1001.2014.3001.5501" target="_blank" rel="noopener"
+>https://blog.csdn.net/ewq21qwe/article/details/106578620?spm=1001.2014.3001.5501&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.rootusers.com/use-procsys-and-sysctl-to-modify-and-set-kernel-runtime-parameters/" target="_blank" rel="noopener"
+>https://www.rootusers.com/use-procsys-and-sysctl-to-modify-and-set-kernel-runtime-parameters&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/KeKe-Li/data-structures-questions/blob/master/src/chapter06/golang.01.md" target="_blank" rel="noopener"
+>https://github.com/KeKe-Li/data-structures-questions/blob/master/src/chapter06/golang.01.md&lt;/a>&lt;/li>
+&lt;/ul></description></item></channel></rss>

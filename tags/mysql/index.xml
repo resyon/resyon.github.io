@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>mysql on Example Site</title><link>https://resyon.netlify.app/tags/mysql/</link><description>Recent content in mysql on Example Site</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 16 Dec 2021 16:03:22 +0800</lastBuildDate><atom:link href="https://resyon.netlify.app/tags/mysql/index.xml" rel="self" type="application/rss+xml"/><item><title>mysql 事务两阶段提交</title><link>https://resyon.netlify.app/p/mysql-%E4%BA%8B%E5%8A%A1%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/</link><pubDate>Thu, 16 Dec 2021 16:03:22 +0800</pubDate><guid>https://resyon.netlify.app/p/mysql-%E4%BA%8B%E5%8A%A1%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/</guid><description>&lt;h1 id="mysql-事务两阶段提交">Mysql 事务两阶段提交&lt;/h1>
+&lt;h2 id="overview">overview&lt;/h2>
+&lt;blockquote>
+&lt;p>准确的说是使用&lt;code>innodb&lt;/code>引擎的&lt;code>mysql&lt;/code>事务的两阶段提交
+&lt;code>redo-log&lt;/code>是&lt;code>innodb&lt;/code>引擎在存储引擎层面实现的&lt;/p>
+&lt;/blockquote>
+&lt;p>例表&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">create&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">table&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">t&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">int&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">primary&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">key&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">c&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="nb">int&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如下查询&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">update&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">t&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">set&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">c&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">c&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="k">where&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">id&lt;/span>&lt;span class="o">`=&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>有以下过程&lt;/p>
+&lt;p>&lt;img src="https://resyon.netlify.app/upload/2021/12/image-8897670d04f14a109066df3f7d0943d0.png"
+loading="lazy"
+alt="image.png"
+>&lt;/p>
+&lt;h2 id="两阶段提交的必要性">两阶段提交的必要性&lt;/h2>
+&lt;p>主要是保证&lt;code>redo-log&lt;/code> 和 &lt;code>bin-log&lt;/code>的一致性。这种必要性体现在异常恢复上。
+由常识我们知道
+&lt;code>redo-log&lt;/code>用于保证事务的&lt;code>原子性&lt;/code>和&lt;code>持久性&lt;/code>，记录的是物理日志，由存储引擎实现
+&lt;code>bin-log&lt;/code>用于归档， 记录的逻辑日志，由mysql &lt;code>server&lt;/code> 层实现&lt;/p>
+&lt;p>若不保证二者同步更新（不使用两阶段提交，即在二者之一完成之后立即提交事务），将出现以下两种情况&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>&lt;code>redo-log&lt;/code> -&amp;gt; &lt;code>commit&lt;/code> -&amp;gt; &lt;code>bin-log&lt;/code>
+若在&lt;code>commit&lt;/code>和&lt;code>bin-log&lt;/code>间异常重启，系统能根据&lt;code>redo-log&lt;/code>恢复事务，&lt;code>bin-log&lt;/code>于是实际上少了一条记录，这就影响了后续对&lt;code>bin-log&lt;/code>的使用，如构建从库，恢复到某一检查点&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>bin-log&lt;/code> -&amp;gt; &lt;code>commit&lt;/code> -&amp;gt; &lt;code>redo-log&lt;/code>
+若在&lt;code>commit&lt;/code>和&lt;code>redo-log&lt;/code>间异常重启，系统无法恢复事务，而&lt;code>bin-log&lt;/code>多了一条记录，而数据库里实际没有，以后用&lt;code>bin-log&lt;/code>也会出现与原库不一样的问题&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="总结">总结&lt;/h2>
+&lt;p>&lt;code>redo-log&lt;/code>和&lt;code>bin-log&lt;/code>都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。&lt;/p>
+&lt;blockquote>
+&lt;p>ref 丁奇《MySQL实战45讲》&lt;/p>
+&lt;/blockquote></description></item></channel></rss>
